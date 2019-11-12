@@ -1,12 +1,21 @@
 '''Ohjelma joka huolehtii ampusien vaikutuksesta lippaisiin sekä niiden lataamisesta'''
 
 LIPPAAT = {
-    "1": 30,
+    "1": 20,
     "2": 30,
     "3": 30,
-    "4": 0,
-    "5": 0,
-    "6": 0
+    "4": 10,
+    "5": 20,
+    "6": 30
+}
+
+RUUMIIN_LIPPAAT = {
+    "1": 20,
+    "2": 30,
+    "3": 30,
+    "4": 30,
+    "5": 20,
+    "6": 20
 }
 
 def ammu(kirja, lipas, lk_mär):
@@ -51,8 +60,18 @@ def main(kirja):
         elif kaytto[0] == 'l':
             lipas = lataa(kirja, lipas)
             
+def nosta(kirja1, kirja2):
+    '''Funktio joka hallitsee lippaiden nostamista kuolleilta'''
+    for i in range(1, 7):
+        for a in range(1, 7):
+            if kirja2[str(i)] > kirja1[str(a)]:
+                kirja1[str(a)] = kirja2[str(i)]
+
+
 
         
 if __name__ == "__main__":
+    nosta(LIPPAAT, RUUMIIN_LIPPAAT)
+    print(LIPPAAT)
     main(LIPPAAT)
 
