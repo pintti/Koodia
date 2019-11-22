@@ -71,7 +71,5 @@ def nosta(kirja1, kirja2):
 
         
 if __name__ == "__main__":
-    nosta(LIPPAAT, RUUMIIN_LIPPAAT)
-    print(LIPPAAT)
     main(LIPPAAT)
 
