@@ -59,6 +59,35 @@ def tulvataytto(lista, x, y):
                         naatit.append((a, i))
 
 
+def tulva2(lista, x, y):
+    naatit = [(x, y)]
+    y_raja = len(lista)
+    x_raja = len(lista[0])
+    if lista[y][x] == 'x':
+        pass
+    else:
+        while naatit != []:
+            x_krd, y_krd = naatit.pop(-1)
+            n = 0
+            for i in range(y_krd-1, y_krd+2, 2):
+                if i < 0 or i >= y_raja:
+                    continue
+                elif lista[i][x_krd] == 'x':
+                    n += 1
+                elif lista[i][x_krd] == ' ':
+                    naatit.append((i, x_krd))
+            for a in range(x_krd-1, x_krd+2, 2):
+                if a < 0 or a >= x_raja:
+                    continue
+                elif lista[y_krd][a] == 'x':
+                    n += 1
+                elif lista[y_krd][a] == ' ':
+                    naatit.append((y_krd, a))
+            lista[y_krd][x_krd] = str(n)
+            print(lista[y_krd][x_krd])
+            
+
+
 planeetta = [
     [" ", " ", " ", "x", " ", " ", " ", " ", " ", " ", " ", "x", " "], 
     [" ", " ", "x", "x", " ", " ", " ", "x", " ", " ", " ", "x", " "], 
@@ -68,5 +97,5 @@ planeetta = [
     [" ", " ", "x", " ", " ", " ", " ", " ", " ", "x", " ", " ", " "]
 ]
 
-tulvataytto(planeetta, 1, 1)
+tulva2(planeetta, 9, 4)
 main()
