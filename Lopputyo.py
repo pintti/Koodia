@@ -14,6 +14,12 @@ hiiri = {
     4: 'oikea' 
 }
 
+liput = {
+    'jatka': True,
+    "peli": False,
+    "voitto": 0
+}
+
 elementit = {
     "kehys1": None,
     "teksti1": None,
@@ -25,9 +31,10 @@ elementit = {
 }
 
 peli = {
-    "leveys": 5,
-    "korkeus": 5,
-    "miinat": 10,
+    "leveys": 0,
+    "korkeus": 0,
+    "miinat": 0,
+    "miinakrd": [],
     "liputetut": 0,
     "jaljella": []
 }
@@ -72,7 +79,7 @@ def arvo_kasittelija():
             iku.tyhjaa_kentan_sisalto(elementit["leveys"])
             iku.tyhjaa_kentan_sisalto(elementit["korkeus"])
             iku.tyhjaa_kentan_sisalto(elementit["miinat"])
-            peli_aloita()
+            liput["peli"] = True
             iku.lopeta()
     except ValueError:
         iku.avaa_viesti_ikkuna("Virhe", "Arvojen täytyy olla kokonaislukuja", True)
@@ -86,7 +93,7 @@ def yllata():
     miina_ala = int(pelialue / ran.randint(4, 5))
     miina_yla = int(pelialue / ran.randint(3, 4))
     peli["miinat"] = ran.randint(miina_ala, miina_yla)
-    peli_aloita()
+    liput["peli"] = True
     iku.lopeta()
 
 
@@ -98,6 +105,7 @@ def tulokset():
 
 def lopeta():
     '''Funktio sulkee ohjelman'''
+    liput["jatka"] = False
     iku.lopeta()
 
 
@@ -122,7 +130,8 @@ def peli_aloita():
     luo_kentta(peli["korkeus"], peli["leveys"])
     miinoita(kentta["alue"], peli["jaljella"])
     kentta["tarkistus"] = copy.deepcopy(kentta["alue"])
-    mainpeli()
+    liput["peli"] = False
+    liput['voitto'] = 0
     
 
 
@@ -152,13 +161,18 @@ def luo_kentta(korkeus, leveys):
 
 
 def kasittele_hiiri(x, y, painike, muokkausnäppäimet):
-    if painike == 1:
-        tulva(kentta["alue"], int(x/40), int(y/40))
-        piirra_kentta()
-    elif painike == 4:
-        merkkaa(kentta["alue"], int(x/40), int(y/40))
-        piirra_kentta()
-        tarkistavoitto()
+    if liput['voitto'] == 0:
+        if painike == 1:
+            tulva(kentta["alue"], int(x/40), int(y/40))
+            piirra_kentta()
+            if liput['voitto'] == 2:
+                peli_loppu()
+        elif painike == 4:
+            merkkaa(kentta["alue"], int(x/40), int(y/40))
+            piirra_kentta()
+            if peli['liputetut'] == peli['miinat']:
+                voitto()
+                peli_loppu()
 
 
 def miinoita(alue, vapaa):
@@ -166,7 +180,9 @@ def miinoita(alue, vapaa):
     for i in range(peli["miinat"]):
         krd = ran.choice(vapaa)
         alue[krd[1]][krd[0]] = 'x'
+        peli["miinakrd"].append(krd)
         vapaa.remove(krd)
+    print(peli["miinakrd"])
 
 
 def piirra_kentta():
@@ -181,20 +197,26 @@ def piirra_kentta():
             isox = x_krd * 40
             if ruutu_x == 'x':
                 hav.lisaa_piirrettava_ruutu(' ', isox, isoy)
+            elif ruutu_x == 'h':
+                hav.lisaa_piirrettava_ruutu('x', isox, isoy)
             else:
                 hav.lisaa_piirrettava_ruutu(ruutu_x, isox, isoy)
     hav.piirra_ruudut()
 
 
-def havio():
-    '''Funktio joka käsittelee pelaajan häviön. Häviö näyttää kaikkien
+def havio(lista):
+    '''Funktio joka käsittelee pelaajan häviön. Häviö näyttää kaikkien miinojen
     paikat ja kertoo pelaajalle häviöstä sekä antaa tallentaa pelaajan tilan'''
-    pass
+    for x, y in peli['miinakrd']:
+        lista[y][x] = 'h'
+    liput['voitto'] = 2
+    
 
 
-def tarkistavoitto():
-    '''Funktio joka tarkistaa onko pelaaja voittanut'''
-    pass
+def voitto():
+    '''Funktio joka suorittaa pelaajalla voiton'''
+    liput['voitto'] = 1
+
 
 def tulva(lista, x, y):
     '''Funktio joka avaa pelaajalle ruutuja. Ruudut jotka ovat miinojen
@@ -207,9 +229,9 @@ def tulva(lista, x, y):
     print(lista[y][x])
     print(kentta["tarkistus"][y][x])
     if lista[y][x] == 'x':
-        havio()
+        havio(lista)
     elif lista[y][x] == 'f' and kentta["tarkistus"][y][x] == 'x':
-        print('Hävisit')
+        havio(lista)
     else:
         n = 0
         for i in range(y-1, y+2):
@@ -259,21 +281,45 @@ def merkkaa(lista, x, y):
             lista[y][x] = ' '
         else:
             lista[y][x] = ' '
-        
-
-
-    #if lista[y][x] == ' ':
-    #    kentta["tarkistus"][y][x] = lista[y][x] 
-    #    lista[y][x] = 'f'
-    #elif kentta["tarkistus"][y][x] == 'x':
-    #    lista[y][x] = 'f'
-    #elif lista[y][x] == 'f':
-    #    if kentta["tarkistus"][y][x] == 'x':
-    #    lista[y][x] = kentta["tarkistus"][y][x]
 
 
 def toistuva_kasittelija():
     pass
 
+
+def peli_loppu():
+    ikkuna = iku.luo_ikkuna('')
+    ali = iku.luo_kehys(ikkuna)
+    if liput['voitto'] == 1:
+        iku.avaa_viesti_ikkuna('', 'VOITIT PELIN')
+    elif liput['voitto'] == 2:
+        iku.avaa_viesti_ikkuna('', 'HÄVISIT PELIN')
+    iku.luo_tekstirivi(ali, 'Liputit {} miinaa'.format(peli['liputetut']))
+    iku.luo_tekstirivi(ali, 'Pelaa uudelleen?')
+    iku.luo_nappi(ali, 'Pelaa uudelleen', uusiksi)
+    iku.luo_nappi(ali, 'Palaa päävalikkoon', back)
+    iku.kaynnista()
+
+
+def uusiksi():
+    liput['peli'] = True
+    iku.lopeta()
+    hav.lopeta()
+
+
+def back():
+    hav.lopeta()
+    iku.lopeta()
+
+
+def main():
+    while liput["jatka"]:
+        mainmenu()
+        while liput["peli"] == True:
+            peli_aloita()
+            mainpeli()
+
+
 if __name__ == "__main__":
-    mainmenu()
+    main()
+    
