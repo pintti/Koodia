@@ -6,6 +6,7 @@ import haravasto as hav
 import ikkunasto as iku
 import random as ran
 import time
+import copy
 
 hiiri = {
     1: 'vasen',
@@ -27,15 +28,13 @@ peli = {
     "leveys": 5,
     "korkeus": 5,
     "miinat": 10,
+    "liputetut": 0,
     "jaljella": []
 }
 
 kentta = {
-    "alue": []
-}
-
-tarkistus = {
-    "alue": []
+    "alue": [],
+    "tarkistus": []
 }
 
 def aloita_peli():
@@ -122,7 +121,7 @@ def peli_aloita():
     '''Funktio joka hoitaa miinaharava pelin aloitusjärjestelyn'''
     luo_kentta(peli["korkeus"], peli["leveys"])
     miinoita(kentta["alue"], peli["jaljella"])
-    tarkistus["alue"] = (kentta["alue"][:])
+    kentta["tarkistus"] = copy.deepcopy(kentta["alue"])
     mainpeli()
     
 
@@ -146,7 +145,7 @@ def luo_kentta(korkeus, leveys):
         miinakentta.append([])
         for sarake in range(leveys):
             miinakentta[-1].append(' ')
-    kentta["alue"] = miinakentta
+    kentta["alue"] =copy.deepcopy(miinakentta)
     for x in range(leveys):
         for y in range(korkeus):
             peli["jaljella"].append((x, y))
@@ -159,6 +158,7 @@ def kasittele_hiiri(x, y, painike, muokkausnäppäimet):
     elif painike == 4:
         merkkaa(kentta["alue"], int(x/40), int(y/40))
         piirra_kentta()
+        tarkistavoitto()
 
 
 def miinoita(alue, vapaa):
@@ -175,7 +175,7 @@ def piirra_kentta():
     hav.tyhjaa_ikkuna()
     hav.piirra_tausta()
     hav.aloita_ruutujen_piirto()
-    for y_krd, ruutu_y in enumerate(tarkistus["alue"]):
+    for y_krd, ruutu_y in enumerate(kentta["alue"]):
         isoy = y_krd * 40
         for x_krd, ruutu_x in enumerate(ruutu_y):
             isox = x_krd * 40
@@ -187,9 +187,14 @@ def piirra_kentta():
 
 
 def havio():
-    '''Funktio joka käsittelee pelaajan häviön.'''
+    '''Funktio joka käsittelee pelaajan häviön. Häviö näyttää kaikkien
+    paikat ja kertoo pelaajalle häviöstä sekä antaa tallentaa pelaajan tilan'''
     pass
 
+
+def tarkistavoitto():
+    '''Funktio joka tarkistaa onko pelaaja voittanut'''
+    pass
 
 def tulva(lista, x, y):
     '''Funktio joka avaa pelaajalle ruutuja. Ruudut jotka ovat miinojen
@@ -197,12 +202,14 @@ def tulva(lista, x, y):
     miinan vieressä avataan vain tämä ruutu. Tulva pysähtyy ensimmäisiin
     numeroituihin ruutuihin.'''
     naatit = [(x, y)]
-    print(lista[y][x])
-    print(tarkistus["alue"][y][x])
     y_raja = len(lista)
     x_raja = len(lista[0])
+    print(lista[y][x])
+    print(kentta["tarkistus"][y][x])
     if lista[y][x] == 'x':
         havio()
+    elif lista[y][x] == 'f' and kentta["tarkistus"][y][x] == 'x':
+        print('Hävisit')
     else:
         n = 0
         for i in range(y-1, y+2):
@@ -211,7 +218,7 @@ def tulva(lista, x, y):
             for a in range(x-1, x+2):
                 if a < 0 or a >= x_raja or (i, a) == (y, x):
                         continue
-                elif lista[i][a] == 'x':
+                elif kentta["tarkistus"][i][a] == 'x':
                     n += 1
         if n >= 1:
             lista[y][x] = str(n)
@@ -227,7 +234,7 @@ def tulva(lista, x, y):
                     for a in range(x_krd-1, x_krd+2):
                         if a < 0 or a >= x_raja or (i, a) == (y_krd, x_krd):
                             continue
-                        elif lista[i][a] == 'x':
+                        elif kentta["tarkistus"][i][a] == 'x':
                             r += 1
                             n += 1
                         elif lista[i][a] != ' ':
@@ -240,9 +247,29 @@ def tulva(lista, x, y):
 
 def merkkaa(lista, x, y):
     '''Funktio joka merkkaa pisteen miinaksi'''
-    lista[y][x] = 'f'
-    print(lista[y][x])
-    print(tarkistus["alue"][y][x])
+    if lista[y][x] == ' ' or lista[y][x] == 'x':
+        if kentta["tarkistus"][y][x] == 'x':
+            peli["liputetut"] += 1
+            lista[y][x] = 'f'
+        else:
+            lista[y][x] = 'f'
+    elif lista[y][x] == 'f':
+        if kentta["tarkistus"][y][x] == 'x':
+            peli["liputetut"] -= 1
+            lista[y][x] = ' '
+        else:
+            lista[y][x] = ' '
+        
+
+
+    #if lista[y][x] == ' ':
+    #    kentta["tarkistus"][y][x] = lista[y][x] 
+    #    lista[y][x] = 'f'
+    #elif kentta["tarkistus"][y][x] == 'x':
+    #    lista[y][x] = 'f'
+    #elif lista[y][x] == 'f':
+    #    if kentta["tarkistus"][y][x] == 'x':
+    #    lista[y][x] = kentta["tarkistus"][y][x]
 
 
 def toistuva_kasittelija():
