@@ -123,7 +123,67 @@ def tulva4(lista, x, y):
             elif lista[y_krd][x_krd] == 'r':
                 lista[y_krd][x_krd] = ' '
 
-
+def tulva5(lista, x, y):
+    naatit = [(x, y)]
+    y_raja = len(lista)
+    x_raja = len(lista[0])
+    naatit2 = [(x, y)]
+    if lista[y][x] == 'x':
+        pass
+    else:
+        n = 0
+        for i in range(y-1, y+2):
+            if i < 0 or i >= y_raja:
+                continue
+            for a in range(x-1, x+2):
+                if a < 0 or a >= x_raja or (i, a) == (y, x):
+                        continue
+                elif lista[i][a] == 'x':
+                    n += 1
+        if n >= 1:
+            lista[y][x] = str(n)
+        else:    
+            while naatit != []:
+                x_krd, y_krd = naatit.pop()
+                lista[y_krd][x_krd] = 'y'
+                vali_aika = []
+                m = 0
+                r = 0
+                for i in range(y_krd-1, y_krd+2, 2):
+                    if i < 0 or i >= y_raja:
+                        r += 1
+                    elif lista[i][x_krd] == ' ':
+                        vali_aika.append((x_krd, i))
+                    elif lista[i][x_krd] == 'x':
+                        m += 1
+                for a in range(x_krd-1, x_krd+2, 2):
+                    if a < 0 or a >= x_raja:
+                        r +=1
+                    elif lista[y_krd][a] == ' ':
+                        vali_aika.append((a, y_krd))
+                    elif lista[y_krd][a] == 'x':
+                        m += 1
+                if len(vali_aika) > 1:
+                    naatit.extend(vali_aika)
+                    naatit2.extend(vali_aika)
+                if m >= 1 and r > 0 or m >= 2:
+                    lista[y_krd][x_krd] = 'r'
+            while naatit2 != []:
+                x_krd, y_krd = naatit2.pop()
+                n = 0
+                t = 0
+                for i in range(y_krd-1, y_krd+2):
+                    if i < 0 or i >= y_raja:
+                        continue
+                    for a in range(x_krd-1, x_krd+2):
+                        if a < 0 or a >= x_raja or (i, a) == (y_krd, x_krd):
+                            continue
+                        elif lista[i][a] == 'x':
+                            n += 1
+                if (x_krd, y_krd) == (x, y) or lista[y_krd][x_krd] != 'r':
+                    lista[y_krd][x_krd] = str(n)
+                elif lista[y_krd][x_krd] == 'r':
+                    lista[y_krd][x_krd] = ' '
 
 
 planeetta = [
@@ -131,19 +191,10 @@ planeetta = [
     [" ", " ", "x", "x", " ", " ", " ", "x", " ", " ", " ", "x", " "], 
     [" ", "x", "x", " ", " ", " ", " ", "x", " ", " ", "x", "x", " "], 
     ["x", "x", "x", "x", "x", " ", " ", "x", " ", "x", " ", " ", " "], 
-    ["x", "x", "x", "x", " ", " ", " ", " ", "x", " ", "x", " ", " "], 
-    [" ", " ", "x", " ", " ", " ", " ", " ", " ", "x", " ", " ", " "]
-]
-
-planeetta2 = [
-    [" ", " ", " ", "x", " ", " ", " ", " ", " ", " ", " ", "x", " "], 
-    [" ", " ", "x", "x", " ", " ", " ", "x", " ", " ", " ", " ", " "], 
-    [" ", "x", "x", " ", " ", " ", " ", "x", " ", " ", "x", "x", " "], 
-    ["x", "x", "x", "x", "x", " ", " ", "x", " ", "x", " ", " ", " "], 
-    ["x", "x", "x", "x", " ", " ", " ", " ", "x", " ", "x", " ", " "], 
+    ["x", "x", "x", "x", " ", " ", " ", " ", " ", " ", "x", " ", " "], 
     [" ", " ", "x", " ", " ", " ", " ", " ", " ", "x", " ", " ", " "]
 ]
 
 
-tulva4(planeetta, 6, 0)
+tulva5(planeetta, 5, 0)
 main()

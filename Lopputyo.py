@@ -19,17 +19,22 @@ elementit = {
     "kehys2": None,
     "teksti2": None,
     "korkeus": None,
-    "leveys": None
+    "leveys": None,
+    "miinat": None
 }
 
 peli = {
     "leveys": 5,
     "korkeus": 5,
-    "miinat": None,
+    "miinat": 10,
     "jaljella": []
 }
 
 kentta = {
+    "alue": []
+}
+
+tarkistus = {
     "alue": []
 }
 
@@ -38,7 +43,7 @@ def aloita_peli():
     palauttaa nämä arvot. Avataan ali-ikkunaan jonne syötetään kentan
     leveys, korkeus sekä miinojen määrä (ei implementoitu vielä).'''
     ala = iku.luo_ali_ikkuna('')
-    ala_kehys1 = iku.luo_kehys(ala, iku.YLA)
+    ala_kehys1 = iku.luo_kehys(ala)
     ala_kehys2 = iku.luo_kehys(ala)
     ala_teksti1 = iku.luo_tekstilaatikko(ala_kehys1, 20, 1)
     iku.kirjoita_tekstilaatikkoon(ala_teksti1, "Anna kentän korkeus")
@@ -46,6 +51,10 @@ def aloita_peli():
     ala_teksti2 = iku.luo_tekstilaatikko(ala_kehys2, 20, 1)
     iku.kirjoita_tekstilaatikkoon(ala_teksti2, "Anna kentän leveys")
     elementit["leveys"] = iku.luo_tekstikentta(ala_kehys2)
+    ala_kehys3 = iku.luo_kehys(ala)
+    ala_teksti3 = iku.luo_tekstilaatikko(ala_kehys3, 20, 1)
+    iku.kirjoita_tekstilaatikkoon(ala_teksti3, "Anna miinojen määrä")
+    elementit["miinat"] = iku.luo_tekstikentta(ala_kehys3)
     iku.luo_nappi(ala_kehys2, 'Syötä arvot ja aloita peli', arvo_kasittelija)
     iku.luo_nappi(ala_kehys2, 'Yllätä minut', yllata)
     
@@ -57,11 +66,13 @@ def arvo_kasittelija():
     try:
         peli["korkeus"] = int(iku.lue_kentan_sisalto(elementit["korkeus"]))
         peli["leveys"] = int(iku.lue_kentan_sisalto(elementit["leveys"]))
-        if peli["korkeus"] <= 0 or peli["leveys"] <= 0:
+        peli["miinat"] = int(iku.lue_kentan_sisalto(elementit["miinat"]))
+        if peli["korkeus"] <= 0 or peli["leveys"] <= 0 or peli["miinat"] <= 0:
             iku.avaa_viesti_ikkuna("Virhe", "Arvojen täytyy olla suurempia kuin nolla", True)
         else:
             iku.tyhjaa_kentan_sisalto(elementit["leveys"])
             iku.tyhjaa_kentan_sisalto(elementit["korkeus"])
+            iku.tyhjaa_kentan_sisalto(elementit["miinat"])
             peli_aloita()
             iku.lopeta()
     except ValueError:
@@ -70,8 +81,12 @@ def arvo_kasittelija():
 
 def yllata():
     '''Arpoo pelin kentän koon'''
-    peli['korkeus'] = ran.randint(10, 30)
-    peli['leveys'] = ran.randint(10, 30)
+    peli['korkeus'] = ran.randint(10, 21)
+    peli['leveys'] = ran.randint(10, 21)
+    pelialue = peli["leveys"] * peli["korkeus"]
+    miina_ala = int(pelialue / ran.randint(4, 5))
+    miina_yla = int(pelialue / ran.randint(3, 4))
+    peli["miinat"] = ran.randint(miina_ala, miina_yla)
     peli_aloita()
     iku.lopeta()
 
@@ -105,10 +120,9 @@ def mainmenu():
 
 def peli_aloita():
     '''Funktio joka hoitaa miinaharava pelin aloitusjärjestelyn'''
-    ikkuna = iku.luo_ikkuna('Ladataan')
-    iku.kaynnista()
     luo_kentta(peli["korkeus"], peli["leveys"])
     miinoita(kentta["alue"], peli["jaljella"])
+    tarkistus["alue"] = (kentta["alue"][:])
     mainpeli()
     
 
@@ -117,8 +131,11 @@ def mainpeli():
     '''Itse miinaharavan main funktio'''
     hav.lataa_kuvat("spritet")
     hav.luo_ikkuna(peli["leveys"]*40, peli["korkeus"]*40)
+    hav.aseta_piirto_kasittelija(piirra_kentta)
     hav.aseta_hiiri_kasittelija(kasittele_hiiri)
-    hav.aseta_toistuva_kasittelija #TÄNNE JÄÄTIIN KESKEN
+    #hav.aseta_toistuva_kasittelija(toistuva_kasittelija) 
+    #tämä pitää tehdä jossain vaiheessa
+    hav.aloita()
 
 
 def luo_kentta(korkeus, leveys):
@@ -137,20 +154,15 @@ def luo_kentta(korkeus, leveys):
 
 def kasittele_hiiri(x, y, painike, muokkausnäppäimet):
     if painike == 1:
-        if kentta[y][x] == 'x':
-            havio()
-        elif kentta[y][x] == ' ':
-            tulva(kentta["alue"], x, y)
+        tulva(kentta["alue"], int(x/40), int(y/40))
+        piirra_kentta()
     elif painike == 4:
-        merkkaa()
+        merkkaa(kentta["alue"], int(x/40), int(y/40))
+        piirra_kentta()
 
 
 def miinoita(alue, vapaa):
     '''Funktio joka arpoo miinojen määrän sekä miinoittaa pelikentän'''
-    pelialue = peli["leveys"] * peli["korkeus"]
-    miina_ala = int(pelialue / ran.randint(3, 5))
-    miina_yla = int(pelialue / ran.randint(2, 3))
-    peli["miinat"] = ran.randint(miina_ala, miina_yla)
     for i in range(peli["miinat"]):
         krd = ran.choice(vapaa)
         alue[krd[1]][krd[0]] = 'x'
@@ -160,7 +172,18 @@ def miinoita(alue, vapaa):
 def piirra_kentta():
     '''Funktio joka piirtää pelikentän peli-ikkunaan.
     Funktiota kutsutaan aina kun pelimoottori pyytää ruudun päivitystä.'''
-    pass
+    hav.tyhjaa_ikkuna()
+    hav.piirra_tausta()
+    hav.aloita_ruutujen_piirto()
+    for y_krd, ruutu_y in enumerate(tarkistus["alue"]):
+        isoy = y_krd * 40
+        for x_krd, ruutu_x in enumerate(ruutu_y):
+            isox = x_krd * 40
+            if ruutu_x == 'x':
+                hav.lisaa_piirrettava_ruutu(' ', isox, isoy)
+            else:
+                hav.lisaa_piirrettava_ruutu(ruutu_x, isox, isoy)
+    hav.piirra_ruudut()
 
 
 def havio():
@@ -169,60 +192,61 @@ def havio():
 
 
 def tulva(lista, x, y):
-    '''Funktio joka avaa pelaajalle ruutuja. Ruutuja jotka ovat'''
+    '''Funktio joka avaa pelaajalle ruutuja. Ruudut jotka ovat miinojen
+    vieressä numeroidaan vastaavasti. Mikäli jos ruutu jota avataan on 
+    miinan vieressä avataan vain tämä ruutu. Tulva pysähtyy ensimmäisiin
+    numeroituihin ruutuihin.'''
     naatit = [(x, y)]
+    print(lista[y][x])
+    print(tarkistus["alue"][y][x])
     y_raja = len(lista)
     x_raja = len(lista[0])
-    naatit2 = [(x, y)]
     if lista[y][x] == 'x':
-        pass
+        havio()
     else:
-        while naatit != []:
-            x_krd, y_krd = naatit.pop(-1)
-            lista[y_krd][x_krd] = 'y'
-            vali_aika = []
-            m = 0
-            r = 0
-            for i in range(y_krd-1, y_krd+2, 2):
-                if i < 0 or i >= y_raja:
-                    r += 1
-                elif lista[i][x_krd] == ' ':
-                    vali_aika.append((x_krd, i))
-                elif lista[i][x_krd] == 'x':
-                    m += 1
-            for a in range(x_krd-1, x_krd+2, 2):
-                if a < 0 or a >= x_raja:
-                    r +=1
-                elif lista[y_krd][a] == ' ':
-                    vali_aika.append((a, y_krd))
-                elif lista[y_krd][a] == 'x':
-                    m += 1
-            if len(vali_aika) > 1:
-                naatit.extend(vali_aika)
-                naatit2.extend(vali_aika)
-            if m >= 1 and r > 0:
-                lista[y_krd][x_krd] = 'r'
-        while naatit2 != []:
-            x_krd, y_krd = naatit2.pop(-1)
-            n = 0
-            t = 0
-            for i in range(y_krd-1, y_krd+2):
-                if i < 0 or i >= y_raja:
-                    continue
-                for a in range(x_krd-1, x_krd+2):
-                    if a < 0 or a >= x_raja or (i, a) == (y_krd, x_krd):
+        n = 0
+        for i in range(y-1, y+2):
+            if i < 0 or i >= y_raja:
+                continue
+            for a in range(x-1, x+2):
+                if a < 0 or a >= x_raja or (i, a) == (y, x):
                         continue
-                    elif lista[i][a] == 'x':
-                        n += 1
-            if (x_krd, y_krd) == (x, y) or lista[y_krd][x_krd] != 'r':
+                elif lista[i][a] == 'x':
+                    n += 1
+        if n >= 1:
+            lista[y][x] = str(n)
+        else:  
+            while naatit != []:
+                x_krd, y_krd = naatit.pop()
+                vali_aika = []
+                r = 0
+                n = 0
+                for i in range(y_krd-1, y_krd+2):
+                    if i < 0 or i >= y_raja:
+                        continue
+                    for a in range(x_krd-1, x_krd+2):
+                        if a < 0 or a >= x_raja or (i, a) == (y_krd, x_krd):
+                            continue
+                        elif lista[i][a] == 'x':
+                            r += 1
+                            n += 1
+                        elif lista[i][a] != ' ':
+                            continue
+                        vali_aika.append((a, i))
+                if r == 0:
+                    naatit.extend(vali_aika)
                 lista[y_krd][x_krd] = str(n)
-            elif lista[y_krd][x_krd] == 'r':
-                lista[y_krd][x_krd] = ' '
 
 
-def merkkaa():
+def merkkaa(lista, x, y):
     '''Funktio joka merkkaa pisteen miinaksi'''
+    lista[y][x] = 'f'
+    print(lista[y][x])
+    print(tarkistus["alue"][y][x])
+
+
+def toistuva_kasittelija():
     pass
 
 if __name__ == "__main__":
-    peli_aloita()
+    mainmenu()
