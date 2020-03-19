@@ -82,7 +82,6 @@ def teet(qs):
     t = 0
     while t < len(alphabet):
         t = t1 - (qs[i] * t2)
-        print(t1, t2, t)
         if t == len(alphabet) or -t == len(alphabet):
             return t2
         else:
