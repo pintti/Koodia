@@ -1,1 +1,1 @@
-# Tämä repo on tarkoitettu kaikennäköiselle sekalaiselle koodaukselle. Repossa on niin koulutehtäviä kuin satunnaisia päähänpistojakin.
+## This repo is for random snippets of code I've made, ranging from schoolwork to random thoughts.
