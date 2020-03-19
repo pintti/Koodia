@@ -1,3 +1,7 @@
+'''Moduuli luo päävalikon pelille, päävalikkoon sisältyy pelin
+aloittaminen jossa pelaaja voi säätää haluamansa dimensiot että miinojen
+määrä, katsella tilastoja, että sulkea ohjelman'''
+
 import haravasto as hav
 import ikkunasto as iku
 import random as ran
@@ -98,8 +102,8 @@ def arvo_kasittelija():
 
 def yllata():
     '''Arpoo pelin kentän koon'''
-    peli['korkeus'] = ran.randint(10, 20)
-    peli['leveys'] = ran.randint(10, 20)
+    peli['korkeus'] = ran.randint(10, 21)
+    peli['leveys'] = ran.randint(10, 21)
     pelialue = peli["leveys"] * peli["korkeus"]
     miina_ala = int(pelialue / ran.randint(4, 5))
     miina_yla = int(pelialue / ran.randint(3, 4))
@@ -118,6 +122,9 @@ def tulokset():
         for p in data['tilasto']:
             print(p)
             iku.luo_tekstirivi(piste, 'Nimi: {}, Liputetut: {}, Aika: {}'.format(p['nimi'], p['liputetut'], p['aika']))
+
+
+            
 
 
 def lopeta():
@@ -149,7 +156,6 @@ def peli_aloita():
     liput['voitto'] = 0
     peli["liputetut"] = 0
     liput['save'] = False
-    peli['jaljella'] = []
     luo_kentta(peli["korkeus"], peli["leveys"])
     miinoita(kentta["alue"], peli["jaljella"])
     kentta["tarkistus"] = copy.deepcopy(kentta["alue"])
@@ -175,14 +181,13 @@ def luo_kentta(korkeus, leveys):
         miinakentta.append([])
         for sarake in range(leveys):
             miinakentta[-1].append(' ')
-    kentta["alue"] = copy.deepcopy(miinakentta)
+    kentta["alue"] =copy.deepcopy(miinakentta)
     for x in range(leveys):
         for y in range(korkeus):
             peli["jaljella"].append((x, y))
 
 
 def kasittele_hiiri(x, y, painike, muokkausnäppäimet):
-    '''Funktio käsittelee hiiren :)'''
     if liput['voitto'] == 0:
         if painike == 1:
             tulva(kentta["alue"], int(x/40), int(y/40))
@@ -203,7 +208,6 @@ def piirra_kentta():
     '''Funktio joka piirtää pelikentän peli-ikkunaan.
     Funktiota kutsutaan aina kun pelimoottori pyytää ruudun päivitystä.'''
     hav.tyhjaa_ikkuna()
-    
     hav.piirra_tausta()
     hav.aloita_ruutujen_piirto()
     for y_krd, ruutu_y in enumerate(kentta["alue"]):
@@ -244,7 +248,9 @@ def tulva(lista, x, y):
     naatit = [(x, y)]
     y_raja = len(lista)
     x_raja = len(lista[0])
-    if kentta["tarkistus"][y][x] == 'x':
+    if lista[y][x] == 'x':
+        havio(lista)
+    elif lista[y][x] == 'f' and kentta["tarkistus"][y][x] == 'x':
         havio(lista)
     else:
         n = 0
@@ -258,8 +264,6 @@ def tulva(lista, x, y):
                     n += 1
         if n >= 1:
             lista[y][x] = str(n)
-            if (x, y) in peli['jaljella']:
-                peli['jaljella'].remove((x, y))
         else:  
             while naatit != []:
                 x_krd, y_krd = naatit.pop()
@@ -281,8 +285,6 @@ def tulva(lista, x, y):
                 if r == 0:
                     naatit.extend(vali_aika)
                 lista[y_krd][x_krd] = str(n)
-                if (x_krd, y_krd) in peli['jaljella']:
-                    peli['jaljella'].remove((x_krd, y_krd))
 
 
 def merkkaa(lista, x, y):
@@ -302,8 +304,7 @@ def merkkaa(lista, x, y):
 
 
 def toistuva_kasittelija(aika):
-    '''Toistuva käsittelijä joka tarkistaa voittaako pelaaja pelin'''
-    if peli["liputetut"] == peli["miinat"] and peli['jaljella'] == []:
+    if peli["liputetut"] == peli["miinat"]:
         voitto()
         peli_loppu()
     elif liput['voitto'] == 2:
@@ -347,6 +348,8 @@ def main():
         while liput["peli"]:
             peli_aloita()
             mainpeli()
+            print(liput)
+            print(stats)
             if liput['save']:
                 tallenna()
 
@@ -371,7 +374,6 @@ def nimi():
 
 
 def tallenna():
-    '''Tulosten tallentamisen hoitava funktio'''
     try:
         with open('tulokset.txt', 'r') as file:
             data = json.load(file)
