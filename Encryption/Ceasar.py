@@ -3,81 +3,91 @@ english = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
 
 def encrypt(alphabet):
     k = int(input('Please give the encryption key (k): '))
-    wordlist = input('Please give the word to encrypt: ').lower()
-    encrypted = []
-    for letter in wordlist:
-        if letter in alphabet:
-            index = alphabet.index(letter)
-            encoded = index + k
-            if encoded > len(alphabet):
-                encoded = encoded - len(alphabet)
-            enword = alphabet[encoded]
-            encrypted.append(enword)
-    encryptword = "".join(encrypted).strip(" ")
-    print(encryptword)
-
+    message = input('Please give the message to encrypt: ').lower().split(" ")
+    en_message = []
+    for word in message:
+        encrypted = []
+        for letter in word:
+            if letter in alphabet:
+                index = alphabet.index(letter)
+                encoded = index + k
+                if encoded >= len(alphabet):
+                    encoded = encoded - len(alphabet)
+                enletter = alphabet[encoded]
+                encrypted.append(enletter)
+            encryptword = "".join(encrypted).strip(" ")
+        en_message.append(encryptword)
+    print(" ".join(en_message))
 
 def decrypt(alphabet):
     k = int(input('Please give the decryption key (k): '))
-    wordlist = input(' Please give the encrypted word: ').lower()
-    decrypted = []
-    for letter in wordlist:
-        if letter in alphabet:
-            index = alphabet.index(letter)
-            decoded = index - k
-            if decoded < 0:
-                decoded = decoded + len(alphabet)
-            enword = alphabet[decoded]
-            decrypted.append(enword)
-    decryptword = "".join(decrypted).strip(" ")
-    print(decryptword)
+    message = input('Please give the encrypted message: ').lower().split(" ")
+    de_message = []
+    for word in message:
+        decrypted = []
+        for letter in word:
+            if letter in alphabet:
+                index = alphabet.index(letter)
+                decoded = index - k
+                if decoded < 0:
+                    decoded = decoded + len(alphabet)
+                enword = alphabet[decoded]
+                decrypted.append(enword)
+            decryptword = "".join(decrypted).strip(" ")
+        de_message.append(decryptword)
+    print(" ".join(de_message))
 
 
 def m_encrypt(alphabet):
     x = int(input('Please give the encryption key (x): '))
-    word = input('Please give the message to encrypt: ').lower()
-    encrypted = []
-    for letter in word:
-        if letter in alphabet:
-            index = alphabet.index(letter)
-            encoded = index * x
-            while encoded > len(alphabet):
-                encoded = encoded - len(alphabet)
-            encrypted.append(alphabet[encoded])
-    encryptionword = "".join(encrypted).strip(" ")
-    print(encryptionword)
+    message = input('Please give the message to encrypt: ').lower().split(" ")
+    en_message = []
+    for word in message:
+        encrypted = []
+        for letter in word:
+            if letter in alphabet:
+                index = alphabet.index(letter)
+                encoded = index * x
+                while encoded >= len(alphabet):
+                    encoded = encoded - len(alphabet)
+                encrypted.append(alphabet[encoded])
+            encryptionword = "".join(encrypted).strip(" ")
+        en_message.append(encryptionword)
+    print(" ".join(en_message))
 
 
 def m_decrypt(alphabet):
     denumber = 0
     r0 = len(alphabet)
     x = int(input('Please give the key: '))
-    word = input('Please give the encrypted message: ')
+    message = input('Please give the encrypted message: ').lower().split(" ")
     qs = []
+    de_message = []
     while x > 0:
         r = int(r0 % x)
         q = int((r0 - r) / x)
         qs.append(q)
         r0 = x
         x = r
-    denumber = teet(qs)
+    denumber = teet(qs, r0)
     if denumber < 0:
-        denumber = denumber + len(alphabet)
-    decrypted = []
-    for letter in word:
-        if letter in alphabet:
-            index = alphabet.index(letter)
-            decoded = index * denumber
-            while decoded > len(alphabet):
-                decoded = decoded - len(alphabet)
-            decrypted.append(alphabet[decoded])
-    decryptionword = "".join(decrypted).strip(" ")
-    print(decryptionword)
+            denumber = denumber + len(alphabet)
+    for word in message:
+        decrypted = []
+        for letter in word:
+            if letter in alphabet:
+                index = alphabet.index(letter)
+                decoded = index * denumber
+                while decoded > len(alphabet):
+                    decoded = decoded - len(alphabet)
+                decrypted.append(alphabet[decoded])
+            decryptionword = "".join(decrypted).strip(" ")
+        de_message.append(decryptionword)
+    print(" ".join(de_message))
 
 
-def teet(qs):
+def teet(qs, t2):
     t1 = 0
-    t2 = 1
     i = 0
     t = 0
     while t < len(alphabet):
