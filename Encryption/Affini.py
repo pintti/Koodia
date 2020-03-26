@@ -17,9 +17,8 @@ def affini_encrypt(alphabet):
                     encrypt = encrypt - len(alphabet)
                 enletter = alphabet[encrypt]
                 encrypted.append(enletter)
-            encrypt_wrd = "".join(encrypted).strip(" ")
-        encrypt_msg.append(encrypt_wrd)
-    print(" ".join(encrypt_msg))
+            encrypt_wrd = "".join(encrypted)
+    print(encrypt_wrd)
 
 
 def affini_decrypt(alphabet):
@@ -52,11 +51,9 @@ def affini_decrypt(alphabet):
                     decrypt = decrypt - len(alphabet)
                 decrypted.append(alphabet[decrypt])
             decrypt_wrd = "".join(decrypted)
-        decrypt_msg.append(decrypt_wrd)
-    print(" ".join(decrypt_msg))
+    print(decrypt_wrd)
 
     
-
 def teet(qs, t2, alphabet):
     t1 = 0
     i = 0
@@ -71,20 +68,14 @@ def teet(qs, t2, alphabet):
             i += 1
 
 
-
-
-
-
-
-
-language = input('Choose either (f)innish or (e)nglish: ')
+language = input('Choose either (f)innish or (e)nglish alphabet: ')
 alphabet = english
 if language == 'f':
     alphabet = suomi
 elif language == 'e':
     alphabet = english
 else:
-    print('English has been chosen as default')
+    print('English has been chosen by default')
 choice = input('Choose either (d)ecrypt or (e)ncrypt: ')
 if choice == 'e':
     affini_encrypt(alphabet)
@@ -92,3 +83,4 @@ elif choice == 'd':
     affini_decrypt(alphabet)
 else:
     print('No function selected, terminating')
+input()

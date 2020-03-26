@@ -16,8 +16,7 @@ def encrypt(alphabet):
                 enletter = alphabet[encoded]
                 encrypted.append(enletter)
             encryptword = "".join(encrypted).strip(" ")
-        en_message.append(encryptword)
-    print(" ".join(en_message))
+    print(encryptword)
 
 def decrypt(alphabet):
     k = int(input('Please give the decryption key (k): '))
@@ -34,8 +33,7 @@ def decrypt(alphabet):
                 enword = alphabet[decoded]
                 decrypted.append(enword)
             decryptword = "".join(decrypted).strip(" ")
-        de_message.append(decryptword)
-    print(" ".join(de_message))
+    print(decryptword)
 
 
 def m_encrypt(alphabet):
@@ -52,8 +50,7 @@ def m_encrypt(alphabet):
                     encoded = encoded - len(alphabet)
                 encrypted.append(alphabet[encoded])
             encryptionword = "".join(encrypted).strip(" ")
-        en_message.append(encryptionword)
-    print(" ".join(en_message))
+    print(encryptionword)
 
 
 def m_decrypt(alphabet):
@@ -82,8 +79,7 @@ def m_decrypt(alphabet):
                     decoded = decoded - len(alphabet)
                 decrypted.append(alphabet[decoded])
             decryptionword = "".join(decrypted).strip(" ")
-        de_message.append(decryptionword)
-    print(" ".join(de_message))
+    print(decryptionword)
 
 
 def teet(qs, t2):
@@ -107,7 +103,7 @@ if language == 'f':
 elif language == 'e':
     alphabet = english
 else:
-    print('English has been chosen as default')
+    print('English has been chosen by default')
 choice = input('Choose either (d)ecrypt or (e)ncrypt: ')
 if choice == 'e':
     way = input('(s)um or (m)ultiplication: ')
@@ -123,3 +119,4 @@ elif choice == 'd':
         m_decrypt(alphabet)
 else:
     print('No function selected, terminating')
+input()
