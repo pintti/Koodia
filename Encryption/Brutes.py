@@ -172,7 +172,7 @@ def big_brute(alphabet, msg, index1, index2, letters):
                         elif de_b > len(alphabet):
                             de_b -= len(alphabet)
                     word = decrypt(alphabet, msg, de_a, de_b)
-                    ab = solve_inverse_number(len(alphabet), de_a, alphabet)
+                    ab = de_a^-1
                     print("Word: {}, encryption equation: {}*x+{}".format(word, ab, b))
                     print('Decryption equation: {}*y+{}'.format(de_a, de_b))
                 
