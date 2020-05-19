@@ -1,3 +1,5 @@
+import numpy as np
+
 suomi = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö']
 english = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 test_letters = ['a', 'i', 't', 'n', 'e', 's', 'o', 'h']
@@ -209,22 +211,155 @@ def solve_inverse_number(r0, x, alphabet):
     return inv_number
 
 
-language = input('Choose either (f)innish or (e)nglish alphabet: ')
-alphabet = english
-if language == 'f':
-    alphabet = suomi
-elif language == 'e':
-    alphabet = english
-else:
-    print('English has been chosen by default')
-print('Choose what kind of encryption you want to brute force')
-choice = input('Ceasar (s)um, Ceasar (m)ultiplier or (a)ffini: ')
-if choice == 's':
-    ceasar_sum_brute(alphabet)
-elif choice == 'm':
-    ceasar_mul_brute(alphabet)
-elif choice == 'a':
-    affini_brute(alphabet)
-else:
-    print('No function selected, terminating')
-input()
+def matrix_brute(alphabet):
+    msg = input('Encrypted message: ').lower()
+    truth = input('Part of the solved message (4 letters): ').lower()
+    start = int(input('Give the starting point of solved part (number): '))
+    msg_matrix = [[], []]
+    full_message_matrix = create_message_matrix(msg, alphabet)
+    a = 0
+    for i in range(start, start+4):
+        if a == 0 or a == 2:
+            msg_matrix[0].append(alphabet.index(msg[i]))
+            a += 1
+        else:
+            msg_matrix[1].append(alphabet.index(msg[i]))
+            a += 1
+    msg_matrix = np.matrix(msg_matrix)
+    truth_matrix = [[], []]
+    for i in range(0, 4):
+        if i == 0 or i == 2:
+            truth_matrix[0].append(alphabet.index(truth[i]))
+        else:
+            truth_matrix[1].append(alphabet.index(truth[i]))
+    truth_matrix = np.matrix(truth_matrix)
+    inv_truth_matrix = count_inv_matrix(truth_matrix, alphabet)
+    encryption_matrix = msg_matrix * inv_truth_matrix
+    print_a_matrix(encryption_matrix, len(alphabet))
+    inv_encryption_matrix = np.matrix(count_inv_matrix(encryption_matrix, alphabet))
+    opened_message_matrix = inv_encryption_matrix * full_message_matrix
+    opened_message = open_matrix(opened_message_matrix, len(alphabet), alphabet)
+
+
+def print_a_matrix(matrix, lena):
+    matrix = matrix.tolist()
+    for a, line in enumerate(matrix):
+        for i, number in enumerate(line):
+            if not 0 <= number < lena:
+                while number < 0:
+                    number += lena
+                while number >= lena:
+                    number -= lena
+                matrix[a][i] = number
+    print(matrix)
+
+
+def open_matrix(C, lena, alphabet):
+    C_list = C.tolist()
+    for a, line in enumerate(C_list):
+        for i, number in enumerate(line):
+            if not 0 <= number < lena:
+                while number < 0:
+                    number += lena
+                while number >= lena:
+                    number -= lena
+                C_list[a][i] = number
+    
+    crypted_msg = []
+    k = 1
+    for a, line in enumerate(C_list):
+        for i, number in enumerate(line):
+            if a == 0:
+                crypted_msg.append(alphabet[number])
+            else:
+                i = k + i
+                crypted_msg.insert(i, alphabet[number])
+                k += 1
+    print("".join(crypted_msg).upper())
+
+
+def create_message_matrix(msg, alphabet):
+    length = len(msg)
+    full_matrix = [[], []]
+    for i in range(0, length):
+        if i % 2 == 0:
+            full_matrix[0].append(alphabet.index(msg[i]))
+        if i % 2 == 1:
+            full_matrix[1].append(alphabet.index(msg[i]))
+    full_matrix = np.matrix(full_matrix)
+    return full_matrix
+
+
+def count_inv_matrix(matrix, alphabet):
+    a = matrix.tolist()
+    num_a = matrix
+    det = round((np.linalg.det(num_a)))
+    while det < 0:
+        det += len(alphabet)
+    while det > len(alphabet):
+        det -= len(alphabet)
+    inv_number = solve_inverse_number(len(alphabet), det, alphabet)
+
+    inv_matrix = [[], []]
+    for k, line in enumerate(a):
+        for i, number in enumerate(line):
+            if k == 0 and i == 1 or k == 1 and i == 0:
+                number = -number
+            num = inv_number * number
+            if k == 0 and i == 0:
+                inv_matrix[1].insert(1, num)
+            elif k == 1 and i == 1:
+                inv_matrix[0].insert(0, num)
+            elif k == 0 and i == 1:
+                inv_matrix[0].insert(1, num)
+            elif k == 1 and i == 0:
+                inv_matrix[1].insert(0, num)
+
+    for i, line in enumerate(inv_matrix):
+        for a, number in enumerate(line):
+            nu_nmbr = number
+            while nu_nmbr < 0:
+                nu_nmbr += len(alphabet)
+            while nu_nmbr >= len(alphabet):
+                nu_nmbr -= len(alphabet)
+            inv_matrix[i][a] = nu_nmbr
+    return inv_matrix
+
+
+def solve_inverse_number(r0, x, alphabet):
+    """solves the inverse number using euclidean algorithm"""
+    qs = []
+    while x > 0:
+        r = int(r0 % x)
+        q = int((r0 - r) / x)
+        qs.append(q)
+        r0 = x
+        x = r
+    inv_number = teet(qs, r0, alphabet)
+    return inv_number
+
+
+
+
+
+matrix_brute(english)
+
+#language = input('Choose either (f)innish or (e)nglish alphabet: ')
+#alphabet = english
+#if language == 'f':
+#    alphabet = suomi
+#elif language == 'e':
+#    alphabet = english
+#else:
+#    print('English has been chosen by default')
+#print('Choose what kind of encryption you want to brute force')
+#choice = input('Ceasar (s)um, Ceasar (m)ultiplier or (a)ffini: ')
+#if choice == 's':
+#    ceasar_sum_brute(alphabet)
+#elif choice == 'm':
+#    ceasar_mul_brute(alphabet)
+#elif choice == 'a':
+#    affini_brute(alphabet)
+#else:
+#    print('No function selected, terminating')
+#input()
