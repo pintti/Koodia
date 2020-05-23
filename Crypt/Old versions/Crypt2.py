@@ -1,4 +1,4 @@
-import labyrinth as lab
+import labyrinth2 as lab
 import random as ran
 import numpy as np
 import os
@@ -27,29 +27,26 @@ moves = {
 points = {
     'end': [],
     'continue': 'y',
-    'visible': ['F', 'm', 'S']
-}
-
-class Bot():
-    '''This lil fella is going to be running through a labyrinth trying to solve it. Godspeed lil bot, godspeed.'''
-    def __init__(self, matrix):
-        pass
+    'visible': ['F', 'm', 'S', 'p'],
+    'pickaxe': 0,
+    'pickedup': 0
+}  
 
 
 class Player():
     '''This is you. I made this for fun, just to see if it was hard to make a controlled entity to run in the labyrinth.'''
-    def __init__(self, matrix):
+    def __init__(self, matrix, start_x, start_y):
         print(np.matrix(matrix))
-        start_x, start_y = start_point(matrix)
-        matrixes['hidden'][start_y][start_x] = 'S'
+        #start_x, start_y = start_point(matrix)
+        #matrixes['hidden'][start_y][start_x] = 'S'
         self.x = start_x
         self.y = start_y
+        #end_point(matrixes['hidden'], 3)
         self.main_player(matrix)
 
 
     def main_player(self, matrix):
         '''This is the main function for the player. It loops around until a win condition is reached.'''
-        end_point(matrixes['hidden'], 3)
         while (self.x, self.y) != points['end']:
             self.movement(matrix)
         clear()
@@ -72,9 +69,12 @@ class Player():
         '''Code for the movement of the player. x and y are the points where the player is.'''
         matrix[self.y][self.x] = 'P'
         create_visible_matrix(matrix)
-        self.check_vision(matrixes['hidden'])
+        self.check_vision(matrixes['hidden'], self.x, self.y)
         clear()
         show_maze(matrix)
+        if matrixes['hidden'][self.y][self.x] == 'p':
+            self.pick_up_pickaxe(matrix)
+            matrixes['hidden'][self.y][self.x] = 'm'
         key = self.get_key()
         self.check_move(matrix, key)
 
@@ -97,7 +97,11 @@ class Player():
             if new_y < 0 or new_y >= len(matrix):
                 return
             elif matrixes['hidden'][new_y][self.x] == 1:
-                return
+                if points['pickaxe'] == 1:
+                    matrixes['hidden'][new_y][self.x] = 'm'
+                    points['pickaxe'] = 0
+                else:
+                    return
             else:
                 matrix[self.y][self.x] = matrixes['hidden'][self.y][self.x]
                 self.y = new_y
@@ -106,22 +110,41 @@ class Player():
             if new_x < 0 or new_x >= len(matrix[0]):
                 return
             elif matrixes['hidden'][self.y][new_x] == 1:
-                return
+                if points['pickaxe'] == 1:
+                    matrixes['hidden'][self.y][new_x] = 'm'
+                    points['pickaxe'] = 0
+                else:
+                    return
             else:
                 matrix[self.y][self.x] = matrixes['hidden'][self.y][self.x]
                 self.x = new_x
         elif key == 27:
             sys.exit()
+        elif key == 112:
+            #self.peek(matrix)
+            print("Peeking needs to be reworked so it isn't currently available.")
         
 
-    def check_vision(self, matrix):
+    def check_vision(self, matrix, x, y):
         '''Function checks the players cone of vision and shows him what he should be able to see.'''
         visible = []
-        visible.append(check_y_axis(matrix, self.y, self.x, 1))
-        visible.append(check_y_axis(matrix, self.y, self.x, -1))
-        visible.append(check_x_axis(matrix, self.y, self.x, 1))
-        visible.append(check_x_axis(matrix, self.y, self.x, -1))
-        
+        visible.append(check_y_axis(matrix, y, x, 1))
+        visible.append(check_y_axis(matrix, y, x, -1))
+        visible.append(check_x_axis(matrix, y, x, 1))
+        visible.append(check_x_axis(matrix, y, x, -1))
+        for diag_y in range(y - 1, y + 2, 2):
+            for diag_x in range(x - 1, x + 2, 2):
+                if diag_y >= 0 and diag_x >= 0:
+                    try:
+                        if matrix[diag_y][diag_x] == 1:
+                            continue
+                        else:
+                            diag = self.check_diag_vision(matrix, diag_x, diag_y, x, y)
+                            if diag != None:
+                                visible.append(diag)
+                    except IndexError:
+                        continue
+                
         for visibles in visible:
             for x, y in visibles:
                 try:
@@ -129,7 +152,74 @@ class Player():
                         matrixes['open'][y][x] = matrixes['hidden'][y][x]
                 except IndexError:
                     continue
+
         
+    def check_diag_vision(self, matrix, dx, dy, px, py):
+        diag_visible = []
+        walls = 0
+        try:
+            if matrix[dy][px] == 1:
+                walls += 1
+            if matrix[py][dx] == 1:
+                walls += 1
+            if walls == 2:
+                return
+            elif walls == 1:
+                diag_visible.append((dx, dy))
+                for y in range(dy - 1, dy + 2, 2):
+                    if matrix[y][dx] == 1 and matrixes['size'][1] > y >= 0:
+                        diag_visible.append((dx, y))
+                for x in range(dx - 1, dx + 2, 2):
+                    if matrix[dy][x] == 1 and matrixes['size'][0] > x >= 0:
+                        diag_visible.append((x, dy))
+                return diag_visible
+            elif walls == 0:
+                diag_visible.append((dx, dy))
+                for y in range(dy - 1, dy + 2, 2):
+                    if matrixes['size'][1] > y >= 0:
+                        diag_visible.append((dx, y))
+                for x in range(dx - 1, dx + 2, 2):
+                    if matrixes['size'][0] > x >= 0:
+                        diag_visible.append((x, dy))
+                return diag_visible
+                    
+        except IndexError:
+            return
+                
+
+    def pick_up_pickaxe(self, matrix):
+        print('You have found a pickaxe! It can be used to break down one wall.')
+        print('Press enter to continue.')
+        points['pickedup'] = 0
+        while points['pickedup'] == 0:
+            key = ord(getch())
+            if key == 13:
+                points['pickedup'] = 1
+        points['pickaxe'] = 1
+
+    
+    def peek(self, matrix):
+        create_visible_matrix(matrix)
+        peek_coords = []
+        for y in range(self.y - 1, self.y + 2, 2):
+            try:
+                if matrixes['hidden'][y][self.x] == 'm':
+                    peek_coords.append((y, self.x))
+            except IndexError:
+                continue
+        for x in range(self.x - 1, self.x + 2, 2):
+            try:
+                if matrixes['hidden'][self.y][x] == 'm':
+                    peek_coords.append((self.y, x))
+            except IndexError:
+                continue
+        for y, x in peek_coords:
+            self.check_vision(matrixes['hidden'], x, y)
+            matrixes['open'][y][x] = matrixes['hidden'][y][x]
+        clear()
+        show_maze(matrix)
+        getch()
+      
 
 def check_y_axis(matrix, y, x, path):
     visible_y = []
@@ -146,6 +236,7 @@ def check_y_axis(matrix, y, x, path):
                     try:
                         if matrix[check_y][new_x] == 1 and new_x >= 0:
                             visible_y.append((new_x, check_y))
+
                     except IndexError:
                         continue
         except IndexError:
@@ -168,6 +259,7 @@ def check_x_axis(matrix, y, x, path):
                     try:
                         if matrix[new_y][check_x] == 1 and new_y >= 0:
                             visible_x.append((check_x, new_y))
+
                     except IndexError:
                         continue
         except IndexError:
@@ -186,60 +278,6 @@ def create_visible_matrix(matrix):
                 matrix[y][x] = ' '
 
 
-def start_point(matrix):
-    '''Function goes through the maze and randomizes a starting point from one of the edges. That's where the doors are.'''
-    starting_coords = []
-    for y, a in enumerate(matrix):
-        for x, b in enumerate(a):
-            if x == 0 or x == len(a) - 1 or y == 0 or y == len(matrix) - 1:
-                if b == 'm':
-                    starting_coords.append((x, y))
-    
-    x, y = ran.choice(starting_coords)
-    return x, y
-
-
-def end_point(matrix, num_close_tiles):
-    '''Function searches for a possible endpoint to use as the winning condition. If a valid end point is found,
-    it's marked in the matrixes. If no valid end point is found, the function restarts with a more lax valid condition.'''
-    end_coords = []
-    for y, a in enumerate(matrix):
-        for x, b in enumerate(a):
-            if b == 'm':
-                check = check_end_point(matrix, x, y, num_close_tiles)
-                if check == True:
-                    end_coords.append((x, y))
-    if end_coords != []:
-        end_x, end_y = ran.choice(end_coords)
-        points['end'] = (end_x, end_y)
-        matrixes['open'][end_y][end_x] = 'F'
-        matrixes['hidden'][end_y][end_x] = 'F'
-    else:
-        end_point(matrix, num_close_tiles - 1)
-
-
-def check_end_point(matrix, x, y, num_close_tiles):
-    '''Function checks for a good endpoint to use. Returns true if the point is valid
-    and return false if it's not.'''                
-    num = 0
-    for test_y in range(y - 1, y + 2, 2):
-        try:
-            if matrix[test_y][x] == 1:
-                num += 1
-        except IndexError:
-            continue
-    for test_x in range(x - 1, x + 2, 2):
-        try:
-            if matrix[y][test_x] == 1:
-                    num += 1
-        except IndexError:
-            continue
-    if num == num_close_tiles:
-        return True
-    else:
-        return False
-
-
 def clear():
     '''Function for clearing the cmd.'''
     os.system('cls')
@@ -249,7 +287,7 @@ def show_maze(matrix):
     '''Function for diplaying the maze.'''
     print(np.matrix(matrix))
 
-
+clear()
 print('The amulet guides you. Delve deep and find the treasure. With the amulet and a torch in hand you descend down into the')
 print('')
 print('THE CRYPT')
@@ -259,17 +297,14 @@ input()
 
 while points['continue'] == 'y':
     maze = lab.Matrix(matrixes['size'][0], matrixes['size'][1])
+    start_x, start_y = lab.coordinates['start'][0], lab.coordinates['start'][1]
+    print(lab.coordinates['end'])
+    points['end'] = lab.coordinates['end'][0], lab.coordinates['end'][1]
     matrixes['hidden'] = maze.matrix
     matrixes['open'] = copy.deepcopy(matrixes['hidden'])
-    Player(matrixes['open'])
+    Player(matrixes['open'], start_x, start_y)
     matrixes['size'][0] += 2
     matrixes['size'][1] += 2
 
 
-#maze = lab.Matrix(matrixes['size'][0], matrixes['size'][1])
-#matrixes['hidden'] = maze.matrix
-#matrixes['open'] = copy.deepcopy(matrixes['hidden'])
-#matrixes['open'][2][2] = 'P'
-#print(np.matrix(matrixes['open']))
-#create_visible_matrix(matrixes['open'])
-#print(np.matrix(matrixes['open']))
+
