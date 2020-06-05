@@ -15,14 +15,15 @@ points = {
 matrixes = {
     'open': [],
     'hidden': [],
-    'size': 10
+    'size': 16
 }
 
 memory = {
     'distances': [],
     'forks': [],
     'moved': [],
-    'moved_forks': []
+    'moved_forks': [],
+    'dead_ends': []
 }
 
 
@@ -59,10 +60,12 @@ class Bot:
                         next_tile = (self.main(matrix, mem_tile[0]), 0)
                         self.clear()
                     else:
-                        memory['forks'] = []
                         print("I've tried that fork before, I'm pushing forwards.")
             else:
+                memory['dead_ends'].append((self.x, self.y))
                 memory['moved'] = [(self.x, self.y)]
+                print('Dead end, turning around.')
+
 
             matrix[self.y][self.x] = matrixes['hidden'][self.y][self.x]
             self.x, self.y = next_tile[0]
@@ -77,13 +80,13 @@ class Bot:
         next_tiles = []
         for y in range(self.y - 1, self.y + 2, 2):
             try:
-                if matrix[y][self.x] in points['visible'] and (self.x, y) not in memory['moved'] and y > -1:
+                if matrix[y][self.x] in points['visible'] and (self.x, y) not in memory['moved'] and (self.x, y) not in memory['dead_ends'] and y > -1:
                     next_tiles.append((self.x, y))
             except IndexError:
                 continue
         for x in range(self.x - 1, self.x + 2, 2):
             try:
-                if matrix[self.y][x] in points['visible'] and (x, self.y) not in memory['moved'] and x > -1:
+                if matrix[self.y][x] in points['visible'] and (x, self.y) not in memory['moved'] and (x, self.y) not in memory['dead_ends'] and x > -1:
                     next_tiles.append((x, self.y))
             except IndexError:
                 continue

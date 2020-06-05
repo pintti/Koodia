@@ -213,8 +213,8 @@ class Matrix:
                     if check == True:
                         end_coords.append((x, y))
 
-        for y in range(coordinates['start'][1] - 3, coordinates['start'][1] + 4):
-            for x in range(coordinates['start'][0] - 3, coordinates['start'][0] + 4):
+        for y in range(coordinates['start'][1] - len(matrix)//2, coordinates['start'][1] + (len(matrix)//2 + 1)):
+            for x in range(coordinates['start'][0] - len(matrix)//2, coordinates['start'][0] + (int(len(matrix)//2) + 1)):
                 try:
                     end_coords.remove((x, y))
                 except (IndexError, ValueError):
