@@ -9,7 +9,9 @@ coordinates = {
     'tobuild': [],
     'start': [],
     'end': [],
-    'pickaxe': []
+    'pickaxe': [],
+    'empty': [],
+    'string': []
 }
 
 class Matrix:
@@ -28,6 +30,7 @@ class Matrix:
         self.start_point(self.matrix)
         self.end_point(self.matrix, 3, 'F')
         self.end_point(self.matrix, 3, 'p')
+        self.final_check()
         #self.clear
 
 
@@ -241,6 +244,99 @@ class Matrix:
             return True
         else:
             return False
+
+
+    def final_check(self):
+        visible = ['F', 'm', 'S', 'p']
+        coordinates['empty'] = []
+        for y, ver in enumerate(self.matrix):
+            for x, hor in enumerate(ver):
+                if self.matrix[y][x] in visible:
+                    coordinates['empty'].append((x, y))
+
+        start_x, start_y = coordinates['start']
+        coordinates['empty'].remove((start_x, start_y))
+        coordinates['string'].append((start_x, start_y))
+
+        self.run_through(coordinates['string'], coordinates['empty'])
+        print(coordinates['empty'])
+        print(np.matrix(self.matrix))
+
+        if coordinates['empty']:
+            while coordinates['empty']:
+                fix_x, fix_y = coordinates['empty'].pop(-1)
+                dont = 0
+                for y in range(fix_y - 1, fix_y + 2, 2):
+                    try:
+                        if self.matrix[y][fix_x] == 1:
+                            if self.check_final_wall(fix_x, y):
+                                self.matrix[y][fix_x] == 'm'
+                                dont = 1
+                                break
+                    except IndexError:
+                        continue
+                if dont == 0:
+                    for x in range(fix_x - 1, fix_x + 2, 2):
+                        try:
+                            if self.matrix[fix_y][x] == 1:
+                                if self.check_final_wall(x, fix_y):
+                                    self.matrix[fix_y][x] == 'm'
+                                    dont = 1
+                                    break
+                        except IndexError:
+                            continue
+                if dont == 1:
+                    self.final_check()
+
+
+
+    def run_through(self, tiles, empty_tiles=None):
+        visible = ['F', 'm', 'S', 'p']
+        passed_through = []
+        while tiles:
+            _x, _y = tiles.pop(-1)
+            passed_through.append((_x, _y))
+            for y in range(_y - 1, _y + 2, 2):
+                try:
+                    if self.matrix[y][_x] in visible and (_x, y) not in passed_through and y < len(self.matrix) and y > -1:
+                        tiles.append((_x, y))
+                        #passed_through.append((_x, y))
+                        if empty_tiles:
+                            if (_x, y) in empty_tiles:
+                                empty_tiles.remove((_x, y))
+                except IndexError:
+                    continue
+            for x in range(_x - 1, _x + 2, 2):
+                try:
+                    if self.matrix[_y][x] in visible and (x, _y) not in passed_through and x < len(self.matrix[0]) and x > -1:
+                        tiles.append((x, _y))
+                        #passed_through.append((x, _y))
+                        if empty_tiles:
+                            if (x, _y) in empty_tiles:
+                                empty_tiles.remove((x, _y))
+                except IndexError:
+                    continue
+        
+
+    def check_final_wall(self, _x, _y):
+        visible = ['F', 'm', 'S', 'p']
+        num = 0
+        for y in range(_y - 1, _y + 2, 2):
+            try:
+                if self.matrix[y][_x] in visible and y >= 0:
+                    num += 1
+            except IndexError:
+                continue
+        for x in range(_x - 1, _x + 2, 2):
+            try:
+                if self.matrix[_y][x] in visible and x >= 0:
+                    num += 1
+            except IndexError:
+                continue
+        if num == 2 or num == 3:
+            self.matrix[_y][_x] = 'm'
+            return True
+
 
 
 
