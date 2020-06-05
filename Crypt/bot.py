@@ -61,7 +61,6 @@ class Bot:
                     else:
                         memory['forks'] = []
                         print("I've tried that fork before, I'm pushing forwards.")
-                        time.sleep(1)
             else:
                 memory['moved'] = [(self.x, self.y)]
 
