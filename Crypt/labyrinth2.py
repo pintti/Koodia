@@ -28,9 +28,9 @@ class Matrix:
         self.wall_breaker()
         print('Loading 90%')
         self.start_point(self.matrix)
+        self.final_check()
         self.end_point(self.matrix, 3, 'F')
         self.end_point(self.matrix, 3, 'p')
-        self.final_check()
         self.clear()
 
 
@@ -212,6 +212,14 @@ class Matrix:
                     check = self.check_end_point(matrix, x, y, num_close_tiles)
                     if check == True:
                         end_coords.append((x, y))
+
+        for y in range(coordinates['start'][1] - 3, coordinates['start'][1] + 4):
+            for x in range(coordinates['start'][0] - 3, coordinates['start'][0] + 4):
+                try:
+                    end_coords.remove((x, y))
+                except (IndexError, ValueError):
+                    continue
+        
         if end_coords != []:
             end_x, end_y = ran.choice(end_coords)
             end_coords.remove((end_x, end_y))
