@@ -25,7 +25,7 @@ class Matrix:
         print('Loading 30%')
         self.create_start()
         print('Loading 70%')
-        self.wall_breaker()
+        #self.wall_breaker()
         print('Loading 90%')
         self.start_point(self.matrix)
         self.final_check()
