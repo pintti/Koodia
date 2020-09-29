@@ -40,12 +40,12 @@ def solve_starting_number(a_length, z):
 
 
 def turn_word_to_numbers(word, alphabet, k):
-    i = 1
+    i = 0
     number_list = []
     while i < len(word):
         number = 0
-        for p in range(i-1, i+k-1):
-            number += alphabet.index(word[p]) * 10**(2*(i-p))
+        for p in range(i, i+k):
+            number += alphabet.index(word[p]) * 10**(2*((i+k)-p-1))
         number_list.append(number)
         i += k
     return number_list
@@ -85,4 +85,86 @@ def slice_ecnrypt_method(alphabet, word, z, a, b):
     print(nu_word)
     
 
-slice_ecnrypt_method(english, 'material', 5657, 30, 0)
+def solve_starting_k(a_length,z):
+    k = 0
+    m = 0
+    while m < z:
+        k += 1
+        m = a_length**k
+    return k - 1
+
+
+def fill_numbers(lista, k):
+    i = 0
+    for number in lista:
+        lista[i] = str(number).zfill(k*2)
+        i += 1
+    return lista
+
+
+def count_together(lista, a_length, k):
+    number_list = []
+    for numbers in lista:
+        number = 0
+        add = 0
+        p = k - 1
+        for i in range(k):
+            add = int(numbers[i*2]) * 10
+            add += int(numbers[i*2+1])
+            number += add * a_length**p
+            p -= 1
+        number_list.append(number)
+    return number_list
+
+
+def lenghten_word(word, k):
+    while len(word) % k != 0:
+        word = word + 'a'
+    return word
+
+            
+def basis_encrypt_method(alphabet, word, z, a, b):
+    k = solve_starting_k(len(alphabet), z)
+    print(k)
+    if len(word) % k != 0:
+        word = lenghten_word(word, k)
+    ltr_numbers = fill_numbers(turn_word_to_numbers(word, alphabet, k), k)
+    numbers = count_together(ltr_numbers, len(alphabet), k)
+    print(numbers)
+    numbers = count_new_numbers(numbers, z, a, b)
+    print(numbers)
+    print(turn_to_letters(numbers, alphabet, k))
+    
+
+def count_new_numbers(lista, z, a, b):
+    i = 0
+    for number in lista:
+        number = affini_letter_change(a, b, number)
+        number = count_number_down(number, z)
+        lista[i] = number
+        i += 1
+    return lista
+
+
+def turn_to_letters(lista, alphabet, k):
+    word_list = []
+    for check in lista:
+        number = 0
+        p = k
+        i = len(alphabet)
+        while number != check:
+            nu_number = i * len(alphabet)**p
+            if (number + nu_number) > check:
+                i -= 1
+                nu_number = number
+            else:
+                number += nu_number
+                word_list.append(alphabet[i])
+                p -= 1
+                i = len(alphabet)
+    return word_list
+            
+
+
+
+basis_encrypt_method(english, 'supernatural', 682103, 329, 0)
