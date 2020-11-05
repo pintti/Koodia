@@ -6,11 +6,12 @@ library = {
 }
 
 
-def open_file(file):
+def open_file():
     """"Opens file, cleans up the newlines from text and returns the text for further
     work"""
     while True:
         try:
+            file = input("Please input the file: ")
             with open(file, "r") as f:
                 text = f.readlines()
                 for i, line in enumerate(text):
@@ -118,14 +119,19 @@ def find_peak(cities, road):
         return peak
 
 
+def print_road(road, peak):
+    print("Your road is through cities", end=' ')
+    print(*road, sep=', ', end=' ')
+    print('with max height of', peak, end=' m.')
+
 
 if __name__ == "__main__":
-    text = open_file("text.txt")
+    text = open_file()
     check_lines(text)
     if range_check(library['cities'], library['end_city']):
         inv_road = find_road(library['cities'])
         real_road = turn_road(inv_road)
         peak = find_peak(library['cities'], real_road)
-        print("Route: ", inv_road, " with height of ", peak, "meters.")
+        print_road(real_road, peak)
     else:
         print('No roads to destination available.')
