@@ -5,6 +5,7 @@ library = {
     "nmbr_of_roads": 0,
     "end_city": 0,
     'forced': 0,
+    'steps': [],
     'cities': {}
 }
 
@@ -46,22 +47,26 @@ def create_city(city, neighbour, road_height):
     library['cities'][str(neighbour)].append((city, road_height))
 
 
-def range_check(cities, city):
+def range_check(cities, city, upper_road=1000):
     try:
         old_n = 0
         checked_cities = [city]
         checking_cities = [city]
         while checking_cities:
-            n = old_n + 1
-            for next_city, _ in cities[str(city)]:
-                if next_city == library['end_city']:
-                    return n
-                else:
-                    if next_city not in checked_cities:
-                        checking_cities.append(next_city)
+            a = 0
+            print(city, checking_cities, old_n+1)
+            for next_city, road in cities[str(city)]:
+                if road <= upper_road:
+                    if next_city == library['end_city']:
+                        return old_n + 1
+                    else:
+                        if next_city not in checked_cities:
+                            checking_cities.append(next_city)
+                    a += 1
             checked_cities.append(checking_cities[-1])
             city = checking_cities.pop(-1)
-            old_n += 1
+            if a > 0:
+                old_n += 1
     except ValueError:
         return False  
 
@@ -76,14 +81,15 @@ def find_road(cities):
         index = find_small(roads)
         future = roads.pop(index)
         old_road = future.pop(-1)
+        if old_road < library['forced']:
+            old_road = library['forced']
         for next_city, next_road in cities[str(future[-1])]:
             if next_city not in future:
-                if old_road > next_road:
+                if old_road >= next_road:                            # Testing show that this spaghetti here makes the code 20% more efficient. HOW?
                     roads.append(future + [next_city, old_road])
                 else:
                     roads.append(future + [next_city, next_road])
         city = future[-1]
-        #print(future)
     print(future, old_road)
     print(time.time() - now)
     future = correct_road(cities, old_road)
@@ -97,12 +103,10 @@ def correct_road(cities, tallest_road):
     cancel_tiles = []
     while city != library['end_city']:
         fastest_route = []
-        print(road, cancel_tiles)
         for next_city, next_road in cities[str(city)]:
             if next_city not in road and next_city not in cancel_tiles:
                 if tallest_road >= next_road:
-                    fastest_route.append([next_city, range_check(cities, next_city)])
-        print(fastest_route)
+                    fastest_route.append([next_city, range_check(cities, next_city, tallest_road)])
         if fastest_route:
             index = find_small(fastest_route)
             city = (fastest_route[index][0])
@@ -126,9 +130,6 @@ def find_forced(cities):
         library['forced'] = forced_1
     else:
         library['forced'] = forced_end
-
-
-
 
 
 def find_small(roads):
@@ -155,11 +156,9 @@ if __name__ == "__main__":
     text = open_file("cities.txt")
     check_lines(text)
     if range_check(library['cities'], 1):
-        #real_road, peak = find_road(library['cities'])
         find_forced(library['cities'])
-        print(library['forced'])
-        real_road = correct_road(library['cities'], library['forced'])
-        print_road(real_road, library['forced'])
+        real_road, peak = find_road(library['cities'])
+        print_road(real_road, peak)
         print(time.time() - now)
     else:
         print('No roads to destination available.')
