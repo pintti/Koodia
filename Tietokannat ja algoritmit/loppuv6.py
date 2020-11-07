@@ -11,12 +11,12 @@ library = {
 
 now = 0
 
-def open_file(file):
+def open_file():
     """"Opens file, cleans up the newlines from text and returns the text for further
     work"""
     while True:
         try:
-            #file = input("Please input the file: ")
+            file = input("Please input the file: ")
             with open(file, "r") as f:
                 text = f.readlines()
                 for i, line in enumerate(text):
@@ -54,7 +54,6 @@ def range_check(cities, city, upper_road=1000):
         checking_cities = [city]
         while checking_cities:
             a = 0
-            print(city, checking_cities, old_n+1)
             for next_city, road in cities[str(city)]:
                 if road <= upper_road:
                     if next_city == library['end_city']:
@@ -75,22 +74,24 @@ def find_road(cities):
     """This is where the magic happens"""
     roads = []
     city = 1
+    road_traveled = [city]
     for next_city, next_road in cities[str(city)]:
         roads.append([city, next_city, next_road])
     while city != library['end_city']:
+        road_traveled.append(city)
         index = find_small(roads)
         future = roads.pop(index)
         old_road = future.pop(-1)
         if old_road < library['forced']:
             old_road = library['forced']
         for next_city, next_road in cities[str(future[-1])]:
-            if next_city not in future:
-                if old_road >= next_road:                            # Testing show that this spaghetti here makes the code 20% more efficient. HOW?
-                    roads.append(future + [next_city, old_road])
+            if next_city != future[0] and next_city not in road_traveled:
+                if old_road >= next_road: 
+                    roads.append([city, next_city, old_road])
                 else:
-                    roads.append(future + [next_city, next_road])
+                    roads.append([city, next_city, next_road])
         city = future[-1]
-    print(future, old_road)
+    print(old_road)
     print(time.time() - now)
     future = correct_road(cities, old_road)
     return future, old_road
@@ -152,8 +153,8 @@ def print_road(road, peak):
 
 
 if __name__ == "__main__":
+    text = open_file()
     now = time.time()
-    text = open_file("cities.txt")
     check_lines(text)
     if range_check(library['cities'], 1):
         find_forced(library['cities'])
