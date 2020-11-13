@@ -72,6 +72,8 @@ def range_check(cities, city, upper_road=1000):
 
 def find_road(cities):
     """This is where the magic happens"""
+    print(cities)
+    input()
     roads = []
     city = 1
     road_traveled = []
@@ -122,7 +124,7 @@ def correct_road(cities, tallest_road):
 def find_forced(cities):
     forced_1 = 1000
     forced_end = 1000
-    for _, road in cities["1"]:
+    for city, road in cities["1"]:
         if road < forced_1:
             forced_1 = road
     for city, road in cities[str(library['end_city'])]:
@@ -145,6 +147,22 @@ def find_small(roads):
             small = value[-1]
             index = roads.index(value)
     return index
+
+
+def find_smallest_pair(roads):
+    small1, small2 = None, None
+    for value in roads:
+        if small:
+            try1, try2 = value[-1], value[-2]
+            if small1 > try1 or small1 > try2:
+                small1, small2 = try1, try2
+                index = roads.index(value)
+        else:
+            small1, small2 = value[-1], value[-2]
+            index = road.index(value)
+    
+
+
 
 
 def print_road(road, peak):

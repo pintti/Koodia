@@ -73,11 +73,11 @@ def range_check(cities, city, upper_road=1000):
 def find_road(cities):
     """This is where the magic happens"""
     roads = []
-    city = 1
+    city = library['end_city']
     road_traveled = []
     for next_city, next_road in cities[str(city)]:
         roads.append([city, next_city, next_road])
-    while city != library['end_city']:
+    while city != 1:
         if city not in road_traveled:
             road_traveled.append(city)
         index = find_small(roads)
