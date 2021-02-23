@@ -1,0 +1,24 @@
+main:
+    popq %rcx
+    rrmovq %rcx, %rdi
+    rrmovq %rcx, %rsi
+start:
+    irmovq $0, %r10
+    rrmovq %rdi, %r8
+    rrmovq %rsi, %r9
+    popq %rcx
+    subq %rcx, %r10
+    je end
+max:
+    subq %rcx, %r8
+    jge min
+    rrmovq %rcx, %rdi
+    jmp start
+min:
+    subq %rcx, %r9
+    jl start
+    rrmovq %rcx, %rsi
+    jmp start
+end:
+    halt
+    

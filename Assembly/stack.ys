@@ -1,0 +1,13 @@
+main:
+    irmovq $0,%r8
+    irmovq $1,%r9
+    irmovq $0,%rcx
+    irmovq taulukko,%rsp
+loop:
+    addq %r9,%r8
+    popq %rdx
+    xorq %rcx,%rdx
+    jne loop
+    subq %r9,%r8
+    rrmovq %r8,%rax
+    halt

@@ -1,0 +1,19 @@
+main:
+    irmovq $1,%r8
+    rrmovq %r8,%r9
+    rrmovq %rsi,%rdx
+    jmp check
+loop:
+    addq %r9,%r8
+    addq %rsi,%rdx
+check:
+    rrmovq %rdi,%rcx
+    subq %rdx,%rcx
+    jg loop
+    je end
+substract:
+    subq %r9,%r8
+end:
+    rrmovq %r8,%rax
+    halt
+    

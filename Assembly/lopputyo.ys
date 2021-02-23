@@ -1,0 +1,177 @@
+#   Harjoitustyö TKJ-kurssille, tein (pseudo)satunnaislukugeneraattorin
+#   Tehnyt Aleksi Tuovinen 2622318
+#
+# Pohdintaa:
+#   - Aluksi pohdin maskin käyttöä, ei riittänyt aivokapasiteetti yksinkertaiseen ratkaisuun tätä kautta
+#   - Hoidetaan summaus peasantilla, helpoin ja kevein (mitä osaan)
+#   - Kun luku on kerrottu, miten erotetaan pienempi osa?
+#   - Miinustetaan miljoonilla, neljällä seedillä luvut jäävät aina satojen tuhansien piiriin
+#   - Optimoinnnin vuoksi miinustetaan kolmella miljoonalla, plussataan miljoonalla kunnes pos. luku
+#   - Tämä testattu optimoiduimmaksi python skriptillä
+#   - Saatiin satatuhat luku suhteellisen helposti, mutta miten saadaan nyt neljä ensimmäistä
+#   - Jaetaan sadalla, oli ensimmäinen ajatus, tämä kuitenkin hyvin raskasta
+#   - Mitä jos miinustetaan? Ensin satatuhatta, sitten kymmenen jne.?
+#   - Saadaan suoraan tarvittavat luvut, sitten vain kerrotaan tuhannella, sadalla, jne.
+#   - Kun luvut sitten yhdistää saadaan keskiluku mitä haetaan.
+#   - Voitto??? Ei aivan, koodissa ongelmia.
+#   - Tässä vaiheessa pistin kovemman vaihteen silmään minkä takia kommentoiti ja mietiskely jäi vähemmälle
+#   - Lyhyesti, useat rekisterit jäivät kummittelemaan, lisäsin alustuksia, aikaisemmin käyttämäni stack
+#   onnistui rikkomaan ohjelmaa, poistin sen ja muokkasin peasant algoritmista tehokkaamman ja
+#   tein viiden loopin tarkistimen vapauttamalla %rdin ja olemalla koskematta siihen.
+#   - Valmis.
+#   - En saanut compilettua koodia jotta olisin voinut saada tarkan lukeman käytetyistä komennoista.
+#   - Laskemalla kuinka monta kertaa steppasin simulaattorissa sain yhden loopin stepeiksi noin 350. 
+#   Tästä olettamalla päättelisin että pahimmassa tapauksessa yksi looppi voi viedä 400 komentoa, 
+#   joten koko työn komentojen määrä on noin 1750-2000 komentoa.
+
+
+#.pos 0
+#    irmovq Pino,%rsp # pinon alustukset
+#    irmovq Pino,%rbp    
+#    irmovq $6601,%r8 #1. siemenluku
+# tästä alkaa palautettava koodi  
+
+main:
+    jmp power           # siirrytään heti kertomaan
+    
+main2:    
+    irmovq $3000000, %r8 #käytetään tuhansien saamiseen
+    jmp million_s
+
+million_s:
+    subq %r8, %rax      # vähennetään kolme mil
+    jg million_s        # hypätään takaisin josiso
+    irmovq $1000000, %r8
+    jmp million_a
+    
+million_a:
+    addq %r8, %rax
+    jl million_a
+    irmovq $100000, %r8 # valmistellaan seuraava miinustus loop
+    irmovq $1, %r9      # ykkönen looppeihin
+    irmovq $-1, %r10    # -1 ettei mene väärin
+    jmp sub_m
+    
+sub_m:              
+    addq %r9, %r10      # eka numero
+    subq %r8, %rax
+    jge sub_m
+    addq %r8, %rax
+    irmovq $10000, %r8
+    irmovq $-1, %r11
+    jmp sub_tk
+    
+sub_tk:                 # toka numero
+    addq %r9, %r11
+    subq %r8, %rax
+    jge sub_tk
+    addq %r8, %rax
+    irmovq $1000, %r8
+    irmovq $-1, %r12
+    jmp sub_k
+    
+sub_k:                  # kolmas numero
+    addq %r9, %r12
+    subq %r8, %rax
+    jge sub_k
+    addq %r8, %rax
+    irmovq $100, %r8
+    irmovq $-1, %r13
+    jmp sub_h
+    
+sub_h:
+    addq %r9, %r13      # neljäs numero
+    subq %r8, %rax
+    jge sub_h
+    irmovq $10, %r8
+    irmovq $0, %rcx
+    jmp add_te
+    
+add_te:                 # lähdetään tulemaan takaisin päin, eka kympit
+    addq %r8, %rcx
+    subq %r9, %r12
+    jg add_te
+    cmovl %rdx, %rcx    #tällä varmistetaan että jos nolla niin ei mennä laittamaan numeroita
+    rrmovq %rcx, %r12
+    irmovq $100, %r8
+    irmovq $0, %rcx  
+    jmp add_h
+    
+add_h:                  # sataset
+    addq %r8, %rcx
+    subq %r9, %r11
+    jg add_h
+    cmovl %rdx, %rcx    #tällä varmistetaan että jos nolla niin ei mennä laittamaan numeroita
+    rrmovq %rcx, %r11
+    irmovq $1000, %r8
+    irmovq $0, %rcx
+    jmp add_t
+    
+add_t:                  # tonnit
+    addq %r8, %rcx
+    subq %r9, %r10
+    jg add_t
+    cmovl %rdx, %rcx    #tällä varmistetaan että jos nolla niin ei mennä laittamaan numeroita
+    rrmovq %rcx, %r10
+    jmp sum_to
+
+sum_to:                 # summataan aikaisemmin saadut luvut raxiin, saadaan random lukumme
+    irmovq $0, %rax
+    addq %r10, %rax
+    addq %r11, %rax
+    addq %r12, %rax
+    addq %r13, %rax
+    jmp reset       
+    
+reset:                  # laitetaan luku stackiin, tarkistetaan loopin numero ja palataan alkuun   
+    pushq %rax
+    rrmovq %rax, %r8
+    irmovq $1, %rsi
+    addq %rsi, %rdi     # %rdi:hin ei ole viitattu taikka muokattu ennen tätä jolloin sen pitäisi olla aina nolla
+    irmovq $5, %rsi
+    rrmovq %rdi, %rcx
+    subq %rsi, %rcx
+    je true_end         # tänne mennään jos ollaan loopattu viidesti
+    jmp main
+ 
+true_end:               # ja luvut nätisti näkyviin
+    popq %r8
+    popq %r9
+    popq %r10
+    popq %r11
+    popq %r12
+    halt                # THE END
+ 
+
+
+#   Kommentoinnit englanniksi koska kopioitu suoraan monimutkaisen kertolaskun tehtävästä    
+power:                  # function for power
+    irmovq $0, %r14
+    irmovq $0, %r9
+    irmovq $0, %rax
+    irmovq $1, %rbx     # bitmask
+    rrmovq %r8, %r12    # multiplier
+    jmp maskcheck       # begin
+
+addstack:
+    addq %r8, %rax      # add value to rax to get real number
+    addq %r13, %r14     # r14 for check multiplier
+    rrmovq %r12, %rdx   # copy
+    subq %r14, %rdx     # check for zero
+    je main2            # zero, continue program
+    jmp leftshift       # continue program
+
+maskcheck:
+    rrmovq %r12, %r13    #copy
+    andq %rbx, %r13     #make 13 a check
+    je leftshift       #if zero jump to shift
+    jne addstack        #otherwise jump to addstack
+
+leftshift:             #shifting to left here
+    addq %rbx, %rbx
+    addq %r8, %r8
+    jmp maskcheck
+    
+
+.pos 0x1000
+Pino:

@@ -58,55 +58,52 @@ def open_text(text):
     return cities
 
 
-def solve_graph(graph):
+def solve_height(graph):
     start = 1
     end = int(graph.end_city)
     
     cities_list = [city for city in graph.city_list]
     graph.heights[start] = 0
 
+    city = cities_list[0]
 
-    now_city = 0
-    last_city = 0
     while cities_list:
         minval = INF
-        for city in cities_list:
-            if graph.heights[city] < minval and graph.heights[city] != 0:
-                minval = graph.heights[city]
-                now_city = city
-        print(now_city)
-        print(minval)
-        cities_list.remove(now_city)
-        
-        for next_city in graph.next_city_list[now_city]:
-            city_number = next_city.next_city
-            if graph.heights[city_number] > minval:
-                graph.heights[city_number] = next_city.city_height
-                graph.routes[city_number] = now_city
-        print(graph.heights)
-        print(graph.routes)
-        last_city = now_city
-        input()
-        
+        for next_city in cities_list:
+            if graph.heights[next_city] < minval:
+                minval = graph.heights[next_city]
+                city = next_city
+        cities_list.remove(city)
 
-        if now_city == end:
-
+        for next_city in graph.next_city_list[city]:
+            number = next_city.next_city
+            if graph.heights[number] > minval:
+                if graph.heights[number] < next_city.city_height:
+                    pass
+                elif next_city.city_height > minval:
+                    graph.heights[number] = next_city.city_height
+                    graph.routes[number] = city
+                else:
+                    graph.heights[number] = minval
+                    graph.routes[number] = city
+                #graph.routes[number] = city
+        if city == end:
             break
-
     return graph
 
 
-def solve_route(graph):
-    route = []
-    start = graph.end_city
-    height = 0
-    while start != 1:
-        route.insert(0, start)
-        start = graph.routes[start]
-        if graph.heights[start] > height:
-            height = graph.heights[start]
-    route.insert(0, start)
-    return route, height
+def solve_route(graph, height):
+    city_list = [1]
+    
+    while city_list:
+        second_list = []
+        for city in city_list:
+            for adj_city in graph.next_city_list[city]:
+                if adj_city.city_height <= height:
+                    second_list.append(adj_city.next_city) 
+
+        
+
 
 
 
@@ -114,8 +111,14 @@ if __name__ == "__main__":
     text = open_file()
     now = time.time()
     graph = open_text(text)
-    graph = solve_graph(graph)
+    now = time.time()
+    graph = solve_height(graph)
+    end = time.time()
     
-    #route, height = solve_route(graph)
-    #print("Your route", route, "and max height", height)
-    #print(maximum_height)
+    height = graph.heights[graph.end_city]
+    print(height)
+
+    """route, height = solve_route(graph)
+    print("Your route", route, "and max height", height)
+    print("Time taken:", end-now)
+    #print(maximum_height)"""

@@ -1,0 +1,18 @@
+main:
+    rrmovq %r13, %r14
+    irmovq $61440, %r8
+    irmovq $4095, %r9
+    andq %r9, %r13
+    andq %r8, %r14
+    
+add:
+    irmovq $1, %rdx
+loop:
+    addq %rdx, %rax
+    rrmovq %rax, %rbx
+    subq %r9, %r14
+    rrmovq %r14, %rsi
+    subq %rsi, %rbx
+    jne loop
+    rrmovq %rax, %r14
+    

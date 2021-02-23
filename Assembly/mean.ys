@@ -1,0 +1,32 @@
+main:
+    irmovq $0, %r8
+    irmovq $0, %r9
+    irmovq $1, %r10
+count:
+    popq %rdi
+    subq %rdi, %r8
+    je sub
+    irmovq $0, %r8
+    addq %rdi, %rdx
+    addq %r10, %r9
+    jmp count
+    
+sub:
+    rrmovq %r9, %rdi
+    irmovq $1,%r8
+    rrmovq %r8,%r10
+    jmp check
+loop:
+    addq %r10,%r8
+    addq %r9,%rdi
+check:
+    rrmovq %rdx,%rcx
+    subq %rdi,%rcx
+    jg loop
+    je end
+substract:
+    subq %r10,%r8
+end:
+    rrmovq %r8,%rax
+    halt
+    

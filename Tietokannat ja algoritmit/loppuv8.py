@@ -65,41 +65,42 @@ def solve_graph(graph):
     cities_list = [city for city in graph.city_list]
     graph.heights[start] = 0
 
+    city = cities_list[0]
 
-    now_city = 0
-    last_city = 0
     while cities_list:
         minval = INF
-        for city in cities_list:
-            if graph.heights[city] < minval and graph.heights[city] != 0:
-                minval = graph.heights[city]
-                now_city = city
-        print(now_city)
+        for next_city in cities_list:
+            if graph.heights[next_city] < minval:
+                minval = graph.heights[next_city]
+                city = next_city
+        cities_list.remove(city)
+
+        for next_city in graph.next_city_list[city]:
+            number = next_city.next_city
+            if graph.heights[number] > minval:
+                if graph.heights[number] < next_city.city_height:
+                    pass
+                elif next_city.city_height > minval:
+                    graph.heights[number] = next_city.city_height
+                    graph.routes[number] = city
+                else:
+                    graph.heights[number] = minval
+                    graph.routes[number] = city
+                #graph.routes[number] = city
+        """print(city)
         print(minval)
-        cities_list.remove(now_city)
-        
-        for next_city in graph.next_city_list[now_city]:
-            city_number = next_city.next_city
-            if graph.heights[city_number] > minval:
-                graph.heights[city_number] = next_city.city_height
-                graph.routes[city_number] = now_city
         print(graph.heights)
         print(graph.routes)
-        last_city = now_city
-        input()
-        
-
-        if now_city == end:
-
+        input()"""
+        if city == end:
             break
-
     return graph
 
 
 def solve_route(graph):
     route = []
     start = graph.end_city
-    height = 0
+    height = graph.heights[start]
     while start != 1:
         route.insert(0, start)
         start = graph.routes[start]
@@ -114,8 +115,11 @@ if __name__ == "__main__":
     text = open_file()
     now = time.time()
     graph = open_text(text)
+    now = time.time()
     graph = solve_graph(graph)
+    end = time.time()
     
-    #route, height = solve_route(graph)
-    #print("Your route", route, "and max height", height)
+    route, height = solve_route(graph)
+    print("Your route", route, "and max height", height)
+    print("Time taken:", end-now)
     #print(maximum_height)

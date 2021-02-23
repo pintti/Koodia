@@ -1,0 +1,38 @@
+irmovq $1, %r8      #bitmask
+irmovq stack, %rbp
+irmovq stack, %rsp
+
+main:
+jmp maskcheck
+
+addstack:
+pushq %r11          #add value to stack
+addq %r13, %r14     #r14 for check multiplier
+rrmovq %r12, %rdx   #copy
+subq %r14, %rdx     #check for zero
+je sum
+jmp rightshift
+
+maskcheck:
+rrmovq %r12, %r13   #copy
+andq %r8, %r13      #make 13 a check
+je rightshift       #if zero jump to shift
+jne addstack        #otherwise jump to addstack
+
+rightshift:
+addq %r8, %r8
+addq %r11, %r11
+jmp maskcheck
+
+sum:
+popq %rcx
+xorq %rcx, %rdx
+je end
+addq %rcx, %rax
+jmp sum
+
+end:
+halt
+
+.pos 0x1000
+stack:
