@@ -3,12 +3,23 @@ import time
 INF = float('inf')
 
 class City:
+    """Luokka johon tallennetaan seuraava kaupunki sekä näiden kahden kaupungin välisen reitin korkeus.
+    next_city = Seuraavan kaupunhin numero
+    city_height = Tien korkeus"""                                            
     def __init__(self, city, height):
         self.next_city = city
         self.city_height = height
-        self.last_city = 0
+
 
 class Graafi:
+    """Graafi jossa on tallennettuna kapupungit, maali sekä listat kaupungeista että niiden viereisistä kaupungeista.
+    cities = Kaupunkien lukumäärä
+    end_city = Maali
+    next_city_list = Indeksoitu sanakirja jossa jokainen indeksi osoittaa tiettyä kaupunkia. 
+    Tässä indeksissä on tallennettuna lista kaupungin viereisistä kaupungeista City-luokkana.
+    city_list = Lista kaupungeista.
+    heights = Indeksoitu lista korkeuksista.
+    routes = Indeksoitu lista mistä kaupungista on kuljettu kyseiseen kaupunkiin."""
     def __init__(self, nmbr_of_cities, end_city, text):
         self.cities = nmbr_of_cities
         self.end_city = end_city
@@ -23,7 +34,6 @@ class Graafi:
             self.city_list.append(i)
             self.heights[i] = INF
             self.routes[i] = 0
-
 
         for now_city, next_city, height in text:
             add_city(self, int(now_city), int(next_city), int(height))
@@ -59,6 +69,7 @@ def open_text(text):
 
 
 def solve_graph(graph):
+    """Solves the graph using a modified version of Djikstras algorithm."""
     start = 1
     end = int(graph.end_city)
     
@@ -67,37 +78,35 @@ def solve_graph(graph):
 
     city = cities_list[0]
 
-    while cities_list:
+    while cities_list:  #Loop as long as cities_list has objects.
         minval = INF
-        for next_city in cities_list:
+        for next_city in cities_list:   #Find the route with smallest value, pick the city with smallest route as observed
             if graph.heights[next_city] < minval:
                 minval = graph.heights[next_city]
                 city = next_city
-        cities_list.remove(city)
+        try:
+            cities_list.remove(city)       #Remove checked city so no useless looping will happen.
+        except ValueError:
+            print("Route not available.")
+            return 0
 
-        for next_city in graph.next_city_list[city]:
+        for next_city in graph.next_city_list[city]:    #Assing values to the cities next to the observed city.
             number = next_city.next_city
             if graph.heights[number] > minval:
-                if graph.heights[number] < next_city.city_height:
+                if graph.heights[number] < next_city.city_height: #This is so that cities with smaller values don't get replaced by bigger values.
                     pass
-                elif next_city.city_height > minval:
+                elif next_city.city_height > minval:    #This replaces  INFs and values that are too high with smaller values.
                     graph.heights[number] = next_city.city_height
                     graph.routes[number] = city
-                else:
+                else:                                   #Else keep the minval value assigned so that we can always access it fast by checking the value the goal got.
                     graph.heights[number] = minval
                     graph.routes[number] = city
-                #graph.routes[number] = city
-        """print(city)
-        print(minval)
-        print(graph.heights)
-        print(graph.routes)
-        input()"""
         if city == end:
-            break
-    return graph
+            return graph
 
 
 def solve_route(graph):
+    """This merely checks the route from end to start and readies it for printing."""
     route = []
     start = graph.end_city
     height = graph.heights[start]
@@ -118,8 +127,8 @@ if __name__ == "__main__":
     now = time.time()
     graph = solve_graph(graph)
     end = time.time()
-    
-    route, height = solve_route(graph)
-    print("Your route", route, "and max height", height)
-    print("Time taken:", end-now)
-    #print(maximum_height)
+
+    if graph:
+        route, height = solve_route(graph)
+        print("Your route", route, "and max height", height)
+        print("Time taken:", end-now)
