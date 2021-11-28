@@ -13,6 +13,8 @@ tim = ""
 upper_font = pyg.freetype.SysFont("arial", 17)
 news_font = pyg.freetype.SysFont("timesnewroman", 20)
 
+testi_lamp = "Sisä: 22.5 C Ulko: -13.4 C"
+
 
 def setup():
     #size = pyg.display.get_desktop_sizes()[-1]
@@ -28,8 +30,9 @@ def main_loop(display, size):
 
     pyg.draw.rect(display, c_black, feed1, border_radius=7)
     pyg.draw.rect(display, c_grey, feed2)
-    update_box(news_font, display, feed2, "test")
+    update_box(news_font, display, feed2, "TeSt")
     pyg.draw.line(display, c_black, (0, 20), (800, 20), 3)
+    update_box(upper_font, display, (600, 0), testi_lamp)
     while True:
         clock = time.asctime().split()
         clock[0] = days[clock[0]]
@@ -43,7 +46,7 @@ def main_loop(display, size):
 def setup_rect(x, y, width, height):
     rect1 = pyg.Rect((x, y), (width, height))
     rect2 = rect1.copy()
-    rect2 = rect2.inflate(-8, -8)
+    rect2 = rect2.inflate(-6, -6)
     return rect1, rect2
 
 
