@@ -32,25 +32,25 @@ void loop() {
   Serial.print(temp1);
   Serial.println(" C");
 
-  lcd_function(temp2, temp1);
+  lcd_function();
 
   delay(200);
 }
 
-void lcd_function(double temp_1, double temp_2){
+void lcd_function(){
   lcd.clear();
   
   lcd.setCursor(0, 0);
   lcd.print("Sis");
   lcd.print((char)225);
   lcd.print(": ");
-  lcd.print(temp1);
+  lcd.print(temp2);
   lcd.print((char)223);
   lcd.print("C");
 
   lcd.setCursor(0, 1);
   lcd.print("Ulko: ");
-  lcd.print(temp2);
+  lcd.print(temp1);
   lcd.print((char)223);
   lcd.print("C");
 }
