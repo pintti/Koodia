@@ -30,7 +30,7 @@ def recv(sock):
 
 def btConnect(address):
     start = get_current_timestamp()
-    while get_current_timestamp() - start < 10: #this might need to be longer
+    while get_current_timestamp() - start < 10:
         try:
             sock = bt.BluetoothSocket(bt.RFCOMM)
             sock.connect((address, 1))
@@ -98,15 +98,12 @@ def seconds_till_hour():
 def main_data():
     sock = btConnect(btAddr)
     if sock:
-        while True: #maybe need to add some timeout stuff here, dunno
+        while True:
             data = recv(sock)
             data, ACK = handle_data(data)
             if data:
                 print(data)
                 return data, sock
-                #print("Starting ACK")
-                #if syncClock(sock):
-                #    return data, LAST_SYNC 
     else:
         print("Program failed")
         return 1
@@ -117,8 +114,9 @@ def main_sleep(sock):
         if sock:
             print("Starting sleep sync")
             if syncClock(sock):
+                sock.close()
                 return LAST_SYNC
 
 
 if __name__ == "__main__":
-    main()
+    main_data()
