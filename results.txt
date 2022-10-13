@@ -1,0 +1,44 @@
+{
+    "a": {
+        "wins": 1,
+        "position": 1,
+        "streak": 1,
+        "losses": 1
+    },
+    "b": {
+        "wins": 0,
+        "position": 4,
+        "streak": 5,
+        "losses": 5
+    },
+    "c": {
+        "wins": 1,
+        "position": 7,
+        "streak": 0,
+        "losses": 2
+    },
+    "d": {
+        "wins": 1,
+        "position": 6,
+        "streak": 0,
+        "losses": 0
+    },
+    "e": {
+        "wins": 0,
+        "position": 3,
+        "streak": 5,
+        "losses": 5
+    },
+    "f": {
+        "wins": 1,
+        "position": 5,
+        "streak": 0,
+        "losses": 1
+    },
+    "g": {
+        "wins": 1,
+        "position": 2,
+        "streak": 0,
+        "losses": 1
+    }
+}
