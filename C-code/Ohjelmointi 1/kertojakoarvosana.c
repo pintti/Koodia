@@ -9,23 +9,23 @@ int main(void){
     int playerNum = 0, ranNum1 = 0, ranNum2 = 0, addFlag = 1, right = 0, wrong = 0;
     while (playerNum != -1){
         printf("Anna luku -1 lopettaaksesi\n");
-        ranNum1 = rand()%9;
-        ranNum2 = rand()%9;
+        ranNum1 = rand()%8 + 1;
+        ranNum2 = rand()%8 + 1;
         addFlag = rand()%2;
         if (addFlag){
             printf("Paljonko on luku %d kertaa %d? ", ranNum1, ranNum2);
         }
         else{
             while(ranNum1%ranNum2){
-                ranNum1 = rand()%9;
-                ranNum2 = rand()%9;
+                ranNum1 = rand()%8 + 1;
+                ranNum2 = rand()%8 + 1;
             }
             printf("Paljonko on luku %d jaettuna %d? ", ranNum1, ranNum2);
         }
         scanf("%d", &playerNum);
         if (playerNum != -1){
             if (checkNum(playerNum, ranNum1, ranNum2)){
-                printf("Oikein!");
+                printf("Oikein!\n");
                 right++;
             }
             else if (playerNum != -1){
