@@ -50,24 +50,26 @@ void pinCodeCheck(void){
 
 
 void mainMenu(void){
+    /*Main menu function*/
     int option = 0;
     while(1){
-        printf("1. Withdraw\n2. Deposit\nShow Balance\n0. Exit\n> ");
+        printf("1. Withdraw\n2. Deposit\n3. Show Balance\n0. Exit\n> ");
         scanf("%d", &option);
         switch (option)
         {
         case 1:
             withdraw();
-            break;
+            return;
         case 2:
             deposit();
-            break;
+            return;
         case 3:
             showBalance();
-            break;
+            return;
         case 0:
             return;
         default:
+        printf("Input not supported");
             break;
         }
     }
@@ -87,5 +89,58 @@ void createTestUser(void){
 
 
 void withdraw(void){
+    /*Withdraw function*/
+    int withdrawAmount = 0;
+    int moneyAmounts[7] = {20, 40, 60, 80, 100, 150, 200};
+    int cashAmount[2] = {0, 0};
+    printf("1. 20       2. 40\n3. 60     4. 80\n5. 100      6. 150\n7. 200      8. Other sum\n> ");
+    scanf("%d", &withdrawAmount);
+    if (withdrawAmount == 8){
+        printf("Input amount to withdraw > ");
+        scanf("%d", &withdrawAmount);
+        if ((current->balance -= withdrawAmount) < 0){
+            printf("Not enough balance.\n");
+        }
+        else if(withdrawAmount > 1000){
+            printf("Cannot withdraw more than 1000.\n")
+        }
+        else{
+            printf("Withdrawing %d.\n", withdrawAmount);
+            current->balance -= withdrawAmount;
+            countCashDownSimple(cashAmount, withdrawAmount);
+            printf("Withdrawn %d 50 euro bills and %d 20 euro bills\n", cashAmount[0], cashAmount[1]);
+        }
+    }
+    else if (withdrawAmount > 0 && withdrawAmount < 8){
+        if(current->balance - moneyAmounts[withdrawAmount-1] < 0){
+            printf("Not enough balance.\n");
+            return;
+        }
+        else{
+            printf("Withdrawing %d.\n", moneyAmounts[withdrawAmount-1]);
+            current->balance -= moneyAmounts[withdrawAmount-1];
+            countCashDownSimple(cashAmount, moneyAmounts[withdrawAmount-1]);
+            printf("Withdrawn %d 50 euro bills and %d 20 euro bills\n", cashAmount[0], cashAmount[1]);
+        }
+    }
+    else{
+        printf("Input not supported.\n");
+    }
+    return;
+}
 
+
+void countCashDownSimple(int *cashAmount, int withdrawAmount){
+    /*Count the withdraw amount using a very simple algorithm.*/
+    while(withdrawAmount){
+        if(!(withdrawAmount % 50)){
+            cashAmount[0]++;
+            withdrawAmount -= 50;
+        }
+        else{
+            cashAmount[1]++;
+            withdrawAmount -= 20;
+        }
+    }
+    return;
 }

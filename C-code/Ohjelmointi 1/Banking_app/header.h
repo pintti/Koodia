@@ -1,7 +1,7 @@
 typedef struct User User;
 struct User{
     int pinCode;
-    int balance;
+    float balance;
     char accountNum[23];
     User *next;
 };
@@ -12,3 +12,4 @@ void mainMenu(void);
 void withdraw(void);
 void deposit(void);
 void showBalance(void);
+void countCashDownSimple(int *cashAmount, int withdrawAmount);
