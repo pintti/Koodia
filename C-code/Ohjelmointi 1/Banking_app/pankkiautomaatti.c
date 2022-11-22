@@ -65,7 +65,6 @@ User *getAccountDetails(char *accountNum){
     if (inFile != NULL){
         fscanf(inFile, "%d", &pinCode);
         fscanf(inFile, "%d", &balance);
-        printf("TEST: %d, %d", pinCode, balance);
         if (pinCode > 0 && balance >= 0){
             user = createUser(pinCode, balance, accountNum);
             return user;

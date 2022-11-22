@@ -1,5 +1,5 @@
-#ifndef SOME_HEADER_GUARD_WITH_UNIQUE_NAME
-#define SOME_HEADER_GUARD_WITH_UNIQUE_NAME
+#ifndef THIS_IS_MY_HEADER_GUARD
+#define THIS_IS_MY_HEADER_GUARD
 
 struct User;
 typedef struct User{
