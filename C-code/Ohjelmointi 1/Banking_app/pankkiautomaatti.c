@@ -16,8 +16,8 @@ void pinCodeCheck(void){
     /*Function that handles the PIN-code check. Using the current user pointer it checks if the
     given PIN-code matches with that saved in the user struct. User is given three tries to input 
     the right code. If all three fail, the program ends and the bank card would be eaten.*/
-    int pinCode = 0, tries = 0;
-    for(tries = 0; tries<3; tries++){
+    int pinCode = 0, tries = 0, antiTries = 3;
+    for(tries = 0; tries<antiTries; tries++){
         printf("Input PIN-code > ");
         scanf("%d", &pinCode);
         if (pinCode == current->pinCode){
@@ -26,7 +26,7 @@ void pinCodeCheck(void){
             return;
         }
         else{
-            printf("Wrong code\n%d tries left\n", tries);
+            printf("Wrong code\n%d tries left\n", antiTries-tries-1);
         }
     }
     printf("Too many wrong codes given, card will not be returned. Please contact your bank.");
@@ -101,7 +101,7 @@ void withdraw(void){
     int withdrawAmount = 0;
     int moneyAmounts[7] = {20, 40, 60, 80, 100, 150, 200};
     int cashAmount[2] = {0, 0};
-    printf("1. 20       2. 40\n3. 60     4. 80\n5. 100      6. 150\n7. 200      8. Other sum\n> ");
+    printf("1. 20       2. 40\n3. 60       4. 80\n5. 100      6. 150\n7. 200      8. Other sum\n> ");
     scanf("%d", &withdrawAmount);
     if (withdrawAmount == 8){
         printf("Input amount to withdraw > ");
@@ -173,8 +173,7 @@ void accountNumGet(void){
         if (accountNum[strlen(accountNum)-1] == '\n'){
             accountNum[strlen(accountNum)-1] = '\0';
         }
-        clearBuffer();
-
+        
         if(getAccountDetails(accountNum)){
             printf("Account found.\n");
             pinCodeCheck();
@@ -184,6 +183,7 @@ void accountNumGet(void){
             while(1){
                 printf("Account not found.\nTry again?\n1. Yes\n0. No> ");
                 scanf("%d", &option);
+                clearBuffer();
                 if (option == 0){
                     return;
                 }
@@ -212,12 +212,10 @@ int getAccountDetails(char *accountNum){
     FILE *inFile;
     int pinCode, balance;
     strcat(accountNumCheck, ".acc");
-    printf("TEST: Opening account %s.\n", accountNum);
     inFile = fopen(accountNumCheck, "r");
     if (inFile != NULL){
         fscanf(inFile, "%d", &pinCode); // might fuck up
         fscanf(inFile, "%d", &balance); // yeah
-        printf("TEST: %d, %d\n", pinCode, balance);
         createUser(pinCode, balance, accountNum);
     }
     else{
@@ -233,15 +231,13 @@ void writeNewFile(void){
     FILE *outFile;
 
     strcpy(fileName, current->accountNum);
-    strcat(fileName, ".acc");
     outFile = fopen(fileName, "w");
     if (!(outFile)){
-        printf("TEST: Error while writing to file.\n");
         return;
     }
     else{
-        fprintf("%d\n", current->pinCode);
-        fprintf("%d\n", current->balance);
+        fprintf(outFile, "%d\n%d\n", current->pinCode, current->balance);
+        fclose(outFile);
     }
     return;
 }
@@ -256,9 +252,14 @@ void deposit(void){
         scanf("%d", &depositAmount);
 
         if (depositAmount > 0){
-            current->balance += depositAmount;
-            printf("Deposited %d.\n", depositAmount);
-            return;
+            if (depositAmount % 10 == 0){
+                current->balance += depositAmount;
+                printf("Deposited %d.\n", depositAmount);
+                return;
+            }
+            else{
+                printf("Can only deposit bills (10, 20, 50, 100, 200, 500)\n");
+            }
         }
         else if (depositAmount == 0){
             return;
