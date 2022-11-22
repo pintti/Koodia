@@ -1,0 +1,189 @@
+Testplan:
+
+Inputs always begin with intended succesful inputs. Multiple inputs are separated by a comma.
+
+Function:
+accountNumGet()
+    Inputs:
+        - 12345
+        - 1234, 0
+        - 1234, 1, 12345
+        - a * 30
+        - a1
+        - a1a1
+        - 1a
+        - 1a1a
+    Tests:
+        - buffer overflow
+        - improper imputation
+    Results:
+        - Buffer can be overflown, causes program to skip test
+        - improper inputs are handled properly, program continues as normal
+    Fixes:
+        - Buffer overflow: limit the amount of characters input takes, clear the buffer if there are too many characters
+
+pinCodeCheck()
+    Inputs:
+        - 1122
+        - 0
+        - -1122
+        - 5000000000
+        - -5000000000
+        - 100 100
+        - 1122 1122
+        - a
+        - a * 30
+        - a1
+        - a1a1
+        - 1a
+        - 1a1a
+        - a1122
+        - 1122a
+    Tests:
+        - pincode outside of range of int
+        - character inputs
+        - negative inputs
+        - using up all the tries
+        - multiple inputs
+    Results:
+        - ints outside the range of regular int are handled as wrong
+        - character inputs break the function and the program
+        - negative inputs handled properly
+        - using up all the tries exits the program
+        - combined character and letter inputs work
+        - multiple inputs open the main menu twice
+    Fixes:
+        - character inputs: make the program empty the buffer after every pincode check
+        - multiple inputs: move buffer clear to be after input
+    Notes:
+        - adding buffer emptying after every scanf for now
+
+mainMenu()
+    Inputs:
+        - 1
+        - 2
+        - 3
+        - 0
+        - 4
+        - a
+        - a1
+        - 1a
+        - a1a1
+        - 1a1a
+        - 1 1
+    Tests:
+        - character inputs
+        - wrong number inputs
+        - combined inputs (letters and numbers)
+        - multiple inputs
+    Results:
+        - character inputs work properly
+        - wrong numbers skipped over
+        - combined inputs work if the number is given first, otherwise discarded
+    Fixes:
+        - actually had a problem with having set the predefined option as 0 so it always closed the program instead of handling misinputs properly, fixed that
+    Notes:
+        - went back to check the other two functions with combined inputs, was not able to break them
+
+withdraw()
+    Inputs:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8, 0
+        - 8, 170
+        - 8, 10
+        - 8, 30
+        - 9
+        - a
+        - a * 60
+        - a1
+        - 1a
+        - a1a1
+        - 1a1a
+        - 1 1
+        - 8, 10000
+        - 8, -100
+        - 8, -10000
+    Tests:
+        - wrong numbers
+        - going over the balance
+        - negative numbers
+        - characters
+        - buffer overflow
+    Results
+        - almost all inputs are handled properly
+        - buffer overflow returns the program back to mainMenu
+        - large negative numbers break the program
+    Fixes:
+        - numbers are checked to be in the positive range
+    Notes:
+        - added a while loop so the program does not exit on first fail
+        
+deposit()
+    Inputs:
+        - 0
+        - 5, 10
+        - 100
+        - -100
+        - a
+        - a * 60
+        - a1
+        - a10
+        - 1a
+        - 1a1a
+        - 10a
+    Tests:
+        - negative numbers
+        - combined inputs
+        - character inputs
+    Results:
+        - combined inputs starting with a number work, like in the others
+        - all inputs work
+
+showBalance()
+    Inputs:
+        - Nothing
+    Tests:
+        - Working condition
+    Results:
+        - It Just Works
+
+getAccountDetails()
+    Inputs:
+        - Files with correct name 
+        - Files with wrong name 
+        - Files with nothing inside
+        - Files with letters inside 
+        - Files with negative numbers inside 
+    Tests:
+        - Handling correct files
+        - Handling not found files
+        - Handling files with wrong contents
+    Results:
+        - Correct and not found files have been tested with accountNumGet() tests 
+        - Wrong contents are passed by without checking and thus breaking the program
+    Fixes:
+        - Check if the contents were even found
+        - Check if the contents were positive
+
+writeNewFile()
+    Inputs:
+        - filename that was used to get the user data
+        - user data
+    Tests:
+        - everything that was done before
+    Results:
+        - It Just Works
+
+createUser()
+    Inputs:
+        - pincode, balance and the account filename
+    Tests:
+        - everything that was done before
+    Results:
+        - It Just Works

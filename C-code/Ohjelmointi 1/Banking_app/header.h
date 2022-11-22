@@ -7,7 +7,6 @@ struct User{
 };
 
 void pinCodeCheck(void);
-void createTestUser(void);
 void createUser(int pinCode, int balance, char *accountNum);
 void mainMenu(void);
 void withdraw(void);
@@ -39,5 +38,19 @@ int main(void){
         pinCodeCheck();
     }
     return 0;
+}
+*/
+
+//OLD TEST USER CREATION FUNCTION
+/*
+void createTestUser(void){
+    Creates the test User and allocates it to the head of the User linked list that acts as the banking app database.
+    User *test = (User*) malloc(sizeof(User));
+    strcpy(test->accountNum, "FI12 3456 7890 1234 56");
+    test->balance = 1000; 
+    test->pinCode = 1234; 
+    test->next = NULL;
+    current = test;
+    return;
 }
 */

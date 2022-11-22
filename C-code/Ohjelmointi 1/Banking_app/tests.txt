@@ -1,0 +1,735 @@
+Give the account number > 12345
+Input PIN-code > Wrong code
+2 tries left
+
+Give the account number > 1234
+Account not found.
+1. Yes
+0. No> 0
+
+Give the account number > 1234
+Account not found.
+Try again?
+1. Yes
+Give the account number > 12345
+Input PIN-code > Wrong code
+2 tries left
+
+Give the account number > aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+
+Give the account number > a1
+Account not found.
+Try again?
+1. Yes
+
+Give the account number > a1a1
+Account not found.
+Try again?
+1. Yes
+0. No >
+
+Give the account number > 1a
+Account not found.
+Try again?
+1. Yes
+0. No >
+
+Give the account number > 1a1a
+Account not found.
+Try again?
+1. Yes
+0. No >
+
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+
+Give the account number > 12345
+Input PIN-code > 0
+Wrong code
+2 tries left
+Wrong code
+1 tries left
+Input PIN-code > 5000000000
+Wrong code
+0 tries left
+Too many wrong codes given, card will not be returned. Please contact your bank.
+ 
+Give the account number > -5000000000
+Account not found.
+Try again?
+1. Yes
+0. No > 0
+ 
+Give the account number > 12345
+Input PIN-code > -5000000000
+Wrong code
+2 tries left
+Input PIN-code > 100 100
+1 tries left
+Input PIN-code > 1122 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+> Input not supported
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+ 
+Give the account number > 12345
+Input PIN-code > a
+Wrong code
+2 tries left
+Input PIN-code > aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Wrong code
+1 tries left
+Input PIN-code > a1
+Wrong code
+0 tries left
+ 
+Give the account number > 12345
+Input PIN-code > a1a1
+Wrong code
+2 tries left
+Input PIN-code > 1a
+Wrong code
+1 tries left
+Input PIN-code > 1a1a
+Wrong code
+Too many wrong codes given, card will not be returned. Please contact your bank.
+ 
+Give the account number > 12345
+Input PIN-code > a1122
+Wrong code
+2 tries left
+Input PIN-code > 1122a
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+Give the account number > 12345
+Input PIN-code > 1122 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+> 0
+
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+7. 200      8. Other sum
+>
+
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+> 2
+Input the amount to deposit or 0 to exit.
+>
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+Current balance is 2600.
+ 
+Give the account number > 12345
+Input PIN-code > 0
+Wrong code
+2 tries left
+Input PIN-code > 1122
+2. Deposit
+3. Show Balance
+0. Exit
+> 0
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+2. Deposit
+3. Show Balance
+0. Exit
+> a
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+2. Deposit
+3. Show Balance
+0. Exit
+> b
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+> a1
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+> 1a
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+ 
+Give the account number > 12345
+Input PIN-code > a1a1
+Wrong code
+2 tries left
+Input PIN-code > 1234
+Wrong code
+Input PIN-code > a1a1
+Wrong code
+0 tries left
+Too many wrong codes given, card will not be returned. Please contact your bank.
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+> a1a1
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+> 1a1a
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+>
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show Balance
+0. Exit
+> 1 1
+1. 20       2. 40
+7. 200      8. Other sum
+>
+
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> a
+
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+Input not supported
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> b
+Input not supported
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+>
+
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> a1
+Input not supported
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+>
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> a1a1
+Input not supported
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1a1a
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+>
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 1
+Withdrawing 20.
+Withdrawn 0 50 euro bills and 1 20 euro bills
+
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 2
+Withdrawing 40.
+Withdrawn 0 50 euro bills and 2 20 euro bills
+ 
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 3
+Withdrawing 60.
+Withdrawn 0 50 euro bills and 3 20 euro bills
+ 
+Give the account number > 1234
+Account not found.
+Try again?
+1. Yes
+0. No > 1
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 4
+Withdrawing 80.
+Withdrawn 0 50 euro bills and 4 20 euro bills
+ 
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 5
+Withdrawing 100.
+Withdrawn 2 50 euro bills and 0 20 euro bills
+ 
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 6
+Withdrawing 150.
+Withdrawn 3 50 euro bills and 0 20 euro bills
+ 
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 7
+Withdrawing 200.
+Withdrawn 4 50 euro bills and 0 20 euro bills
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 8
+Input amount to withdraw > 0
+Withdrawing 0.
+Withdrawn 0 50 euro bills and 0 20 euro bills
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 8
+Input amount to withdraw > 170
+Withdrawing 170.
+Withdrawn 3 50 euro bills and 1 20 euro bills
+ 
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 9
+Input not supported.
+ 
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> a
+Input not supported.
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+Input not supported
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> a1
+Input not supported.
+ 
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1a
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 1a
+Withdrawing 20.
+Withdrawn 0 50 euro bills and 1 20 euro bills
+ 
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> a1a1
+Input not supported.
+ 
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 1a1a
+Withdrawing 20.
+Withdrawn 0 50 euro bills and 1 20 euro bills
+ 
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 1 1
+Withdrawing 20.
+Withdrawn 0 50 euro bills and 1 20 euro bills
+ 
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 8
+Input amount to withdraw > 10000
+Not enough balance.
+ 
+Give the account number > 12345
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 8
+Input amount to withdraw > -100
+Not enough balance.
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 1
+1. 20       2. 40
+3. 60       4. 80
+5. 100      6. 150
+7. 200      8. Other sum
+> 8
+Input amount to withdraw > -10000
+Withdrawing -10000.
+Withdrawn 85899144 50 euro bills and 858993464 20 euro bills
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 2
+Input the amount to deposit or 0 to exit.
+> 0
+
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 2
+Input the amount to deposit or 0 to exit.
+> 5
+Deposit need to be a whole number consisting of deposit bills (10, 20, 50, 100, 200, 500)
+Input the amount to deposit or 0 to exit.
+Deposited 10.
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 2
+Input the amount to deposit or 0 to exit.
+> 100
+Deposited 100.
+ 
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 2
+Input the amount to deposit or 0 to exit.
+> -100
+Enter a sum larger than zero.
+Input the amount to deposit or 0 to exit.
+> a
+Enter a sum larger than zero.
+Input the amount to deposit or 0 to exit.
+> aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Enter a sum larger than zero.
+Input the amount to deposit or 0 to exit.
+> a1
+Enter a sum larger than zero.
+Input the amount to deposit or 0 to exit.
+> a10
+Enter a sum larger than zero.
+Input the amount to deposit or 0 to exit.
+> 1a
+Deposit need to be a whole number consisting of deposit bills (10, 20, 50, 100, 200, 500)
+Input the amount to deposit or 0 to exit.
+> 1a1a
+Deposit need to be a whole number consisting of deposit bills (10, 20, 50, 100, 200, 500)
+Input the amount to deposit or 0 to exit.
+> a10
+Deposit need to be a whole number consisting of deposit bills (10, 20, 50, 100, 200, 500)
+Input the amount to deposit or 0 to exit.
+> 10a
+Deposited 10.
+Give the account number > 12345
+Input PIN-code > 1122
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 3
+Current balance is 2600.
+ 
+Input PIN-code >
+
+0
+Wrong code
+2 tries left
+Input PIN-code > 1
+Wrong code
+1 tries left
+Wrong code
+0 tries left
+Too many wrong codes given, card will not be returned. Please contact your bank.
+ 
+Give the account number > 11223
+Input PIN-code > -1000
+1. Withdraw
+2. Deposit
+3. Show balance
+0. Exit
+> 3
+Give the account number > 11223
+Input PIN-code > a
+Input PIN-code > a
+Wrong code
+Wrong code
+0 tries left
+Too many wrong codes given, card will not be returned. Please contact your bank.
+
+ 
+
+ 
+
+ 
+Give the account number > 11223
+0, 0Account not found.
+Try again?
+1. Yes
+0. No > 0
+
+ 
+Give the account number > 11223
+ 
+Give the account number > 11223
+0, 0Account not found.
+Try again?
+1. Yes
+0. No > 1
+Give the account number > 11223
+1. Yes
+0. No > 0
+
+ 
+Give the account number > 11223
+Try again?
+1. Yes
+Give the account number > 12345
+1122, 2600Input PIN-code >
+
+ 
+Give the account number > 11223
+1. Yes
+0. No >
+
+Give the account number > 11223
+1, 1Input PIN-code >
+Give the account number > 11223
+0, 0Account not found.
+Try again?
+1. Yes
+0. No > 0
+
+ 
+Give the account number > 11223
+0, 0Account not found.
+Try again?
+1. Yes
+0. No >
+
+Give the account number > 11223
+-1000, -1000Account not found.
+Try again?
+1. Yes
+0. No > 1
+Give the account number > 11223
+-1000, -1000Account not found.
+Try again?
+1. Yes
+0. No > 1
+Give the account number > 12345
+1122, 2600Input PIN-code >
