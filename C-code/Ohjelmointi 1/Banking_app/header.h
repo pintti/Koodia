@@ -1,22 +1,27 @@
-typedef struct User User;
-struct User{
+#ifndef SOME_HEADER_GUARD_WITH_UNIQUE_NAME
+#define SOME_HEADER_GUARD_WITH_UNIQUE_NAME
+
+struct User;
+typedef struct User{
     int pinCode;
     int balance;
     char accountNum[23];
-    User *next;
-};
+    struct User *next;
+} User;
 
-void pinCodeCheck(void);
-void createUser(int pinCode, int balance, char *accountNum);
-void mainMenu(void);
-void withdraw(void);
-void deposit(void);
-void showBalance(void);
-void countCashDownSimple(int *cashAmount, int withdrawAmount);
 void accountNumGet(void);
+User *getAccountDetails(char *accountNum);
+User *createUser(int pinCode, int balance, char *accountName);
+void pinCodeCheck(User *user);
+void mainMenu(User *user);
+void withdraw(User *user);
+void countCashDownSimple(int *cashAmount, int withdrawAmount);
+void writeNewFile(User *user);
+void deposit(User *user);
+void showBalance(User *user);
 void clearBuffer(void);
-int getAccountDetails(char *accountNum);
 
+#endif
 
 /* THIS IS THE OLD MAIN FUNCTION
 int main(void){

@@ -3,7 +3,6 @@
 #include <string.h>
 #include "header.h"
 
-User *current = NULL;
 
 int main(void){
     /*Main function.*/
@@ -12,7 +11,90 @@ int main(void){
 }
 
 
-void pinCodeCheck(void){
+void accountNumGet(void){
+    /*Function ask the user for account number and then passes that number to another function.*/
+    char accountNum[100] = {'\0'};
+    int option = 1;
+    User *user;
+    while(1){
+        printf("Give the account number > ");
+        fgets(accountNum, sizeof(accountNum), stdin);
+
+        if (strlen(accountNum)<30){
+            if (accountNum[strlen(accountNum)-1] == '\n'){
+                accountNum[strlen(accountNum)-1] = '\0';
+            }
+            
+            user = getAccountDetails(accountNum);
+            if(user->pinCode){
+                pinCodeCheck(user);
+                return;
+            }
+            else{
+                while(1){
+                    printf("Account not found.\nTry again?\n1. Yes\n0. No > ");
+                    scanf("%d", &option);
+                    clearBuffer();
+                    if (option == 0){
+                        return;
+                    }
+                    else if(option == 1){
+                        break;
+                    }
+                }
+            }
+        }
+        else{
+            clearBuffer();
+        }
+    }
+}
+
+
+User *getAccountDetails(char *accountNum){
+    /*Function checks the users account details from a file.
+    Returns:
+        1 if file is found.
+        0 if file is not found.*/
+    char *accountNumCheck = accountNum;
+    FILE *inFile;
+    User *user;
+    int pinCode = 0, balance = 0;
+    strcat(accountNumCheck, ".acc");
+    inFile = fopen(accountNumCheck, "r");
+    if (inFile != NULL){
+        fscanf(inFile, "%d", &pinCode);
+        fscanf(inFile, "%d", &balance);
+        printf("TEST: %d, %d", pinCode, balance);
+        if (pinCode > 0 && balance >= 0){
+            user = createUser(pinCode, balance, accountNum);
+            return user;
+        }
+        return;
+    }
+    else{
+        return;
+    }
+}
+
+
+User *createUser(int pinCode, int balance, char *accountName){
+    /*Function that uses the information gotten from the user and from account file to create 
+    the current user that is being handled.
+    Arguments:
+        int pinCode: users pincode
+        int balance: users current balance
+        char accountNum: users account information.*/
+    User *new = (User*) malloc(sizeof(User));
+    strcpy(new->accountNum, accountName);
+    new->pinCode = pinCode;
+    new->balance = balance;
+    new->next = NULL;
+    return new;
+}
+
+
+void pinCodeCheck(User *user){
     /*Function that handles the PIN-code check. Using the current user pointer it checks if the
     given PIN-code matches with that saved in the user struct. User is given three tries to input 
     the right code. If all three fail, the program ends and the bank card would be eaten.*/
@@ -21,8 +103,8 @@ void pinCodeCheck(void){
         printf("Input PIN-code > ");
         scanf("%d", &pinCode);
         clearBuffer();
-        if (pinCode == current->pinCode){
-            mainMenu();
+        if (pinCode == user->pinCode){
+            mainMenu(user);
 
             return;
         }
@@ -35,7 +117,7 @@ void pinCodeCheck(void){
 }
 
 
-void mainMenu(void){
+void mainMenu(User *user){
     /*Main menu function. Works by asking the user for input choice and the proceeding to that function.
     After an operation closes the program.*/
     int option = -1;
@@ -46,15 +128,15 @@ void mainMenu(void){
         switch (option)
         {
         case 1:
-            withdraw();
-            writeNewFile();
+            withdraw(user);
+            writeNewFile(user);
             return;
         case 2:
-            deposit();
-            writeNewFile();
+            deposit(user);
+            writeNewFile(user);
             return;
         case 3:
-            showBalance();
+            showBalance(user);
             return;
         case 0:
             return;
@@ -65,28 +147,12 @@ void mainMenu(void){
 }
 
 
-void createUser(int pinCode, int balance, char *accountNum){
-    /*Function that uses the information gotten from the user and from account file to create 
-    the current user that is being handled.
-    Arguments:
-        int pinCode: users pincode
-        int balance: users current balance
-        char accountNum: users account information.*/
-    User *new = (User*) malloc(sizeof(User));
-    strcpy(new->accountNum, accountNum);
-    new->pinCode = pinCode;
-    new->balance = balance;
-    new->next = NULL;
-    current = new;
-    return;
-}
-
-
-void withdraw(void){
+void withdraw(User *user){
     /*Withdraw function. Asks the user for the amount to withdraw (allows for custom amounts too),
     and then reduces the users accounts balance by that amount.
     The machine can only give 20 and 50 bills so the function check that users input is not an amount 
-    that cannot be given with those bills.*/
+    that cannot be given with those bills.
+    cashAmount array are pointers to 20 euro bills and 50 euro bills respectively*/
     int withdrawAmount = 0;
     int moneyAmounts[7] = {20, 40, 60, 80, 100, 150, 200};
     int cashAmount[2] = {0, 0};
@@ -106,8 +172,11 @@ void withdraw(void){
             else if(withdrawAmount < 0){
                 printf("Amount needs to be a whole positive number divisive by 20 and 50!\n");
             }
+            else if(withdrawAmount == 0){
+                return;
+            }
             else{
-                if ((current->balance -= withdrawAmount) < 0){
+                if ((user->balance -= withdrawAmount) < 0){
                     printf("Not enough balance.\n");
                 }
                 else if(withdrawAmount > 1000){
@@ -115,7 +184,7 @@ void withdraw(void){
                 }
                 else{
                     printf("Withdrawing %d.\n", withdrawAmount);
-                    current->balance -= withdrawAmount;
+                    user->balance -= withdrawAmount;
                     countCashDownSimple(cashAmount, withdrawAmount);
                     printf("Withdrawn %d 50 euro bills and %d 20 euro bills\n", cashAmount[0], cashAmount[1]);
                     return;
@@ -125,13 +194,13 @@ void withdraw(void){
 
         else if (withdrawAmount > 0 && withdrawAmount < 8){
 
-            if(current->balance - moneyAmounts[withdrawAmount-1] < 0){
+            if(user->balance - moneyAmounts[withdrawAmount-1] < 0){
                 printf("Not enough balance.\n");
                 return;
             }
             else{
                 printf("Withdrawing %d.\n", moneyAmounts[withdrawAmount-1]);
-                current->balance -= moneyAmounts[withdrawAmount-1];
+                user->balance -= moneyAmounts[withdrawAmount-1];
                 countCashDownSimple(cashAmount, moneyAmounts[withdrawAmount-1]);
                 printf("Withdrawn %d 50 euro bills and %d 20 euro bills\n", cashAmount[0], cashAmount[1]);
                 return;
@@ -166,100 +235,25 @@ void countCashDownSimple(int *cashAmount, int withdrawAmount){
 }
 
 
-void accountNumGet(void){
-    /*Function ask the user for account number and then passes that number to another function.*/
-    char accountNum[100] = {'\0'};
-    int option = 1;
-    while(1){
-        printf("Give the account number > ");
-        fgets(accountNum, sizeof(accountNum), stdin);
-
-        if (strlen(accountNum)<30){
-            if (accountNum[strlen(accountNum)-1] == '\n'){
-                accountNum[strlen(accountNum)-1] = '\0';
-            }
-            
-            if(getAccountDetails(accountNum) == 1){
-                pinCodeCheck();
-                return;
-            }
-            else if(getAccountDetails(accountNum) == -1){
-                printf("Something went wrong with the file!\n");
-                return;
-            }
-            else{
-                while(1){
-                    printf("Account not found.\nTry again?\n1. Yes\n0. No > ");
-                    scanf("%d", &option);
-                    clearBuffer();
-                    if (option == 0){
-                        return;
-                    }
-                    else if(option == 1){
-                        break;
-                    }
-                }
-            }
-        }
-        else{
-            clearBuffer();
-        }
-    }
-}
-
-
-void clearBuffer(void)
-    /*Function that clears the buffer for future inputs.*/
-{
-   while (fgetc(stdin) != '\n');
-}
-
-
-int getAccountDetails(char *accountNum){
-    /*Function checks the users account details from a file.
-    Returns:
-        1 if file is found.
-        0 if file is not found.
-        -1 if file contents are faulty.*/
-    char *accountNumCheck = accountNum;
-    FILE *inFile;
-    int pinCode = 0, balance = 0;
-    strcat(accountNumCheck, ".acc");
-    inFile = fopen(accountNumCheck, "r");
-    if (inFile != NULL){
-        fscanf(inFile, "%d", &pinCode);
-        fscanf(inFile, "%d", &balance);
-        if (pinCode > 0 && balance >= 0){
-            createUser(pinCode, balance, accountNum);
-            return 1;
-        }
-        return -1;
-    }
-    else{
-        return 0;
-    }
-}
-
-
-void writeNewFile(void){
+void writeNewFile(User *user){
     /*Function to write a file containing the new account data.*/
     char fileName[100] = {'\0'};
     FILE *outFile;
 
-    strcpy(fileName, current->accountNum);
+    strcpy(fileName, user->accountNum);
     outFile = fopen(fileName, "w");
     if (!(outFile)){
         return;
     }
     else{
-        fprintf(outFile, "%d\n%d\n", current->pinCode, current->balance);
+        fprintf(outFile, "%d\n%d\n", user->pinCode, user->balance);
         fclose(outFile);
     }
     return;
 }
 
 
-void deposit(void){
+void deposit(User *user){
     /*Function for user to add funds to their account.*/
     int depositAmount = 0;
     
@@ -269,7 +263,7 @@ void deposit(void){
         clearBuffer();
         if (depositAmount > 0){
             if (depositAmount % 10 == 0){
-                current->balance += depositAmount;
+                user->balance += depositAmount;
                 printf("Deposited %d.\n", depositAmount);
                 return;
             }
@@ -287,8 +281,15 @@ void deposit(void){
 }
 
 
-void showBalance(void){
+void showBalance(User *user){
     /*Function shows the current balance user has.*/
-    printf("Current balance is %d.\n", current->balance);
+    printf("Current balance is %d.\n", user->balance);
     return;
+}
+
+
+void clearBuffer(void)
+    /*Function that clears the buffer for future inputs.*/
+{
+   while (fgetc(stdin) != '\n');
 }
